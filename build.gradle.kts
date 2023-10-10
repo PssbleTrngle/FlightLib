@@ -49,7 +49,7 @@ subprojects {
     }
 
     enablePublishing {
-        //githubPackages()
+        githubPackages()
 
         repositories {
             env["LOCAL_MAVEN"]?.let {
