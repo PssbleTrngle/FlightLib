@@ -23,7 +23,7 @@ jobs:
       - name: build
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: build sonar
+          arguments: build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CI: true

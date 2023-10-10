@@ -60,3 +60,5 @@ subprojects {
         }
     }
 }
+
+enableSonarQube()
