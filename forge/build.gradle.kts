@@ -1,6 +1,7 @@
 val curios_forge_version: String by extra
+val mc_version: String by extra
 
-forge {
+neoforge {
     enableMixins()
 
     dependOn(project(":api"))
@@ -9,5 +10,5 @@ forge {
 }
 
 dependencies {
-    modImplementation("top.theillusivec4.curios:curios-forge:${curios_forge_version}")
+    modImplementation("top.theillusivec4.curios:curios-neoforge:${curios_forge_version}+${mc_version}")
 }

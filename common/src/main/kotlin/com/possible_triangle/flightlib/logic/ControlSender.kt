@@ -3,7 +3,6 @@ package com.possible_triangle.flightlib.logic
 import com.possible_triangle.flightlib.api.FlightKey
 import com.possible_triangle.flightlib.api.IFlightApi
 import com.possible_triangle.flightlib.logic.network.KeyEvent
-import com.possible_triangle.flightlib.platform.Services
 import net.minecraft.client.Minecraft
 import net.minecraft.client.player.LocalPlayer
 
@@ -19,7 +18,7 @@ object ControlSender {
 
     private fun sync(event: KeyEvent) {
         val player = Minecraft.getInstance().player ?: return
-        Services.NETWORK.sendToServer(event)
+        KeyEvent.BUS.send(event)
         ControlManager.handle(player, event)
     }
 

@@ -1,5 +1,5 @@
 plugins {
-    id("com.possible-triangle.gradle") version "0.1.4"
+    id("com.possible-triangle.gradle") version "0.0.0-dev"
 }
 
 withKotlin()
@@ -15,12 +15,6 @@ subprojects {
             }
         }
 
-        maven {
-            url = uri("https://www.cursemaven.com")
-            content {
-                includeGroup("curse.maven")
-            }
-        }
         maven {
             url = uri("https://maven.theillusivec4.top/")
             content {
@@ -43,14 +37,16 @@ subprojects {
         maven {
             url = uri("https://maven.ladysnake.org/releases")
             content {
-                includeGroup("dev.onyxstudios.cardinal-components-api")
+                includeGroup("org.ladysnake.cardinal-components-api")
             }
         }
     }
 
     enablePublishing {
         githubPackages()
-        localMaven()
+        repositories {
+            mavenLocal()
+        }
     }
 }
 

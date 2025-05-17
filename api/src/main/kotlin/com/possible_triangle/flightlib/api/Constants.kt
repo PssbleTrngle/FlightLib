@@ -1,4 +1,4 @@
-package com.possible_triangle.flightlib
+package com.possible_triangle.flightlib.api
 
 import org.apache.logging.log4j.LogManager
 

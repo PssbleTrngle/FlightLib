@@ -1,13 +1,12 @@
 package com.possible_triangle.flightlib.forge.services
 
-import com.possible_triangle.flightlib.Constants.MOD_ID
+import com.possible_triangle.flightlib.api.Constants.MOD_ID
 import com.possible_triangle.flightlib.platform.services.IRegistries
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.sounds.SoundEvent
-import net.minecraftforge.common.ForgeMod
-import net.minecraftforge.eventbus.api.IEventBus
-import net.minecraftforge.registries.DeferredRegister
+import net.neoforged.bus.api.IEventBus
+import net.neoforged.neoforge.common.NeoForgeMod
+import net.neoforged.neoforge.registries.DeferredRegister
 
 class ForgeRegistries : IRegistries {
 
@@ -19,10 +18,10 @@ class ForgeRegistries : IRegistries {
         }
     }
 
-    override val swimSpeed get() = ForgeMod.SWIM_SPEED.get()
+    override val swimSpeed get() = NeoForgeMod.SWIM_SPEED
 
     override fun registerSound(name: String): () -> SoundEvent {
-        val registered = SOUNDS.register(name) { SoundEvent.createVariableRangeEvent(ResourceLocation(MOD_ID, name)) }
+        val registered = SOUNDS.register(name, SoundEvent::createVariableRangeEvent)
         return registered::get
     }
 }

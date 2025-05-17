@@ -1,35 +1,28 @@
 package com.possible_triangle.flightlib.fabric.services
 
-import com.possible_triangle.flightlib.Constants
-import com.possible_triangle.flightlib.logic.network.KeyEvent
 import com.possible_triangle.flightlib.platform.services.INetwork
+import com.possible_triangle.flightlib.platform.services.ServerMessageBus
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.server.level.ServerPlayer
 
 class FabricNetwork : INetwork {
 
-    companion object {
-        private val PACKET_ID = ResourceLocation(Constants.MOD_ID, "key_packet")
+    override fun <TMessage : CustomPacketPayload> clientToServer(
+        type: CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, TMessage>,
+        handler: (TMessage, ServerPlayer) -> Unit
+    ): ServerMessageBus<TMessage> {
+        PayloadTypeRegistry.playC2S().register(type.type(), type.codec())
 
-        fun register() {
-            ServerPlayNetworking.registerGlobalReceiver(PACKET_ID) { server, player, _, buffer, _ ->
-                val event = KeyEvent.decode(buffer)
-                server.execute {
-                    KeyEvent.handle(event, player)
-                }
-            }
+        ServerPlayNetworking.registerGlobalReceiver(type.type()) {message, context ->
+            handler(message, context.player())
         }
 
-    }
-
-    override fun sendToServer(message: Any) {
-        if (message is KeyEvent) {
-            val buffer = PacketByteBufs.create()
-            KeyEvent.encode(message, buffer)
-            ClientPlayNetworking.send(PACKET_ID, buffer)
+        return ServerMessageBus {
+            ClientPlayNetworking.send(it)
         }
     }
-
 }

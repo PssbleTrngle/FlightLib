@@ -1,6 +1,6 @@
 package com.possible_triangle.flightlib.logic
 
-import com.possible_triangle.flightlib.Constants
+import com.possible_triangle.flightlib.api.Constants
 import com.possible_triangle.flightlib.api.FlightKey
 import com.possible_triangle.flightlib.api.FlyingPose
 import com.possible_triangle.flightlib.api.IFlightApi
@@ -9,6 +9,7 @@ import com.possible_triangle.flightlib.init.CommonClass
 import com.possible_triangle.flightlib.mixins.ServerGamePacketListenerImplAccessor
 import com.possible_triangle.flightlib.platform.Services
 import net.minecraft.core.particles.ParticleTypes
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundEvents
@@ -18,7 +19,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.phys.Vec3
-import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 
@@ -31,7 +31,7 @@ object JetpackLogic {
         FlightKey.RIGHT to Vec3(-1.0, 0.0, 0.0),
     )
 
-    private val ATTRIBUTE_ID = UUID.fromString("f4f2d961-fac9-42c2-93b8-69abd884d386")
+    private val ATTRIBUTE_ID = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "boost")
 
     private fun handleSwimModifier(entity: LivingEntity, context: Context?) {
         val attribute = Services.REGISTRIES.swimSpeed?.let { entity.getAttribute(it) } ?: return
@@ -41,10 +41,10 @@ object JetpackLogic {
 
         if (!shouldHaveModifier && hasModifier) attribute.removeModifier(ATTRIBUTE_ID)
         else if (shouldHaveModifier && !hasModifier) {
-            val modifier = context!!.jetpack.swimModifier(context)
+            val modifier = context.jetpack.swimModifier(context)
             if (modifier > 0) attribute.addPermanentModifier(
                 AttributeModifier(
-                    ATTRIBUTE_ID, "${Constants.MOD_ID}:boost", modifier, Operation.MULTIPLY_TOTAL
+                    ATTRIBUTE_ID, modifier, Operation.ADD_MULTIPLIED_TOTAL
                 )
             )
         }

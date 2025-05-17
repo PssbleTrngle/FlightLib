@@ -1,7 +1,6 @@
 package com.possible_triangle.flightlib.fabric;
 
 import com.possible_triangle.flightlib.fabric.compat.TrinketsCompat;
-import com.possible_triangle.flightlib.fabric.services.FabricNetwork;
 import com.possible_triangle.flightlib.init.CommonClass;
 import com.possible_triangle.flightlib.logic.ControlManager;
 import com.possible_triangle.flightlib.logic.JetpackLogic;
@@ -15,7 +14,6 @@ public class FabricEntrypoint implements ModInitializer {
     public void onInitialize() {
         CommonClass.INSTANCE.init();
 
-        FabricNetwork.Companion.register();
         FabricSources.INSTANCE.register();
         TrinketsCompat.INSTANCE.register();
 

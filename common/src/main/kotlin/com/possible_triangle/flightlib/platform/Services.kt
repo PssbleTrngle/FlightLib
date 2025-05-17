@@ -1,6 +1,6 @@
 package com.possible_triangle.flightlib.platform
 
-import com.possible_triangle.flightlib.Constants
+import com.possible_triangle.flightlib.api.Constants
 import com.possible_triangle.flightlib.platform.services.INetwork
 import com.possible_triangle.flightlib.platform.services.IPlatformHelper
 import com.possible_triangle.flightlib.platform.services.IRegistries

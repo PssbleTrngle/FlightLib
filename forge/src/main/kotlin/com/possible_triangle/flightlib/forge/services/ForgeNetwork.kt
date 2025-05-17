@@ -1,52 +1,40 @@
-package com.possible_triangle.flightlib.forge.services
+package com.possible_triangle.dungeon.forge.platform
 
-import com.possible_triangle.flightlib.Constants
-import com.possible_triangle.flightlib.logic.network.KeyEvent
 import com.possible_triangle.flightlib.platform.services.INetwork
-import net.minecraft.resources.ResourceLocation
+import com.possible_triangle.flightlib.platform.services.ServerMessageBus
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.server.level.ServerPlayer
-import net.minecraftforge.network.NetworkDirection
-import net.minecraftforge.network.NetworkEvent.Context
-import net.minecraftforge.network.NetworkRegistry
-import java.util.function.BiConsumer
-import java.util.function.Supplier
+import net.neoforged.bus.api.IEventBus
+import net.neoforged.neoforge.network.PacketDistributor
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
+import net.neoforged.neoforge.network.registration.PayloadRegistrar
 
 class ForgeNetwork : INetwork {
 
     companion object {
+        private val entries = arrayListOf<PayloadRegistrar.() -> Unit>()
 
-        private const val VERSION = "1.0"
-        private val CHANNEL = NetworkRegistry.ChannelBuilder.named(ResourceLocation(Constants.MOD_ID, "network"))
-            .networkProtocolVersion { VERSION }.clientAcceptedVersions(VERSION::equals)
-            .serverAcceptedVersions(VERSION::equals).simpleChannel()
-
-        private fun <T> createHandler(handler: (T, ServerPlayer) -> Unit) =
-            BiConsumer<T, Supplier<Context>> { event, supplier ->
-                val context = supplier.get()
-
-                val player = context.sender
-                if (context.direction == NetworkDirection.PLAY_TO_SERVER && player != null) {
-                    context.enqueueWork {
-                        handler(event, player)
-                    }
-                }
-
-                context.packetHandled = true
+        fun register(modBus: IEventBus) {
+            modBus.addListener { event: RegisterPayloadHandlersEvent ->
+                val registrar = event.registrar("1")
+                entries.forEach { it(registrar) }
             }
-
-        fun init() {
-            CHANNEL.registerMessage(
-                0,
-                KeyEvent::class.java,
-                KeyEvent::encode,
-                KeyEvent::decode,
-                createHandler(KeyEvent::handle)
-            )
         }
     }
 
-    override fun sendToServer(message: Any) {
-        CHANNEL.sendToServer(message)
+    override fun <TMessage : CustomPacketPayload> clientToServer(
+        type: CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, TMessage>,
+        handler: (TMessage, ServerPlayer) -> Unit
+    ): ServerMessageBus<TMessage> {
+        entries.add {
+            playToServer(type.type(), type.codec()) { message, context ->
+                handler(message, context.player() as ServerPlayer)
+            }
+        }
+
+        return ServerMessageBus {
+            PacketDistributor.sendToServer(it)
+        }
     }
-    
 }
