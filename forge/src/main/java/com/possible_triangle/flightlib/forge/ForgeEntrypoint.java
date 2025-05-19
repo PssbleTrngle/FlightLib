@@ -1,8 +1,8 @@
 package com.possible_triangle.flightlib.forge;
 
-import com.possible_triangle.dungeon.forge.platform.ForgeNetwork;
 import com.possible_triangle.flightlib.api.Constants;
 import com.possible_triangle.flightlib.forge.compat.CuriosCompat;
+import com.possible_triangle.flightlib.forge.services.ForgeNetwork;
 import com.possible_triangle.flightlib.forge.services.ForgeRegistries;
 import com.possible_triangle.flightlib.init.CommonClass;
 import com.possible_triangle.flightlib.logic.ControlManager;
@@ -33,7 +33,7 @@ public class ForgeEntrypoint {
         ForgeSources.INSTANCE.register();
         CuriosCompat.INSTANCE.register();
 
-        NeoForge.EVENT_BUS.addListener((PlayerTickEvent event) -> JetpackLogic.INSTANCE.onTick(event.getEntity()));
+        NeoForge.EVENT_BUS.addListener((PlayerTickEvent.Pre event) -> JetpackLogic.INSTANCE.onTick(event.getEntity()));
 
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerChangedDimensionEvent event) -> ControlManager.INSTANCE.reset(event.getEntity()));
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedOutEvent event) -> ControlManager.INSTANCE.reset(event.getEntity()));
@@ -44,7 +44,7 @@ public class ForgeEntrypoint {
 
         modBus.addListener((RegisterKeyMappingsEvent event) -> ControlManager.INSTANCE.registerKeybinds(event::register));
         NeoForge.EVENT_BUS.addListener((InputEvent.Key event) -> ControlSender.INSTANCE.checkKeys());
-        NeoForge.EVENT_BUS.addListener((PlayerTickEvent event) -> {
+        NeoForge.EVENT_BUS.addListener((PlayerTickEvent.Pre event) -> {
             if(event.getEntity() instanceof LocalPlayer player) ControlSender.INSTANCE.onTick(player);
         });
     }

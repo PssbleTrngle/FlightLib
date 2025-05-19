@@ -32,7 +32,7 @@ class KeyEvent(val key: FlightKey, val pressed: Boolean, val notify: Boolean = f
             packet.writeBoolean(event.notify)
         }
 
-        val BUS = Services.NETWORK.clientToServer(TYPE, KeyEvent::handle)
+        fun register() = Services.NETWORK.clientToServer(TYPE, KeyEvent::handle)
     }
 
     private fun handle(player: ServerPlayer) {

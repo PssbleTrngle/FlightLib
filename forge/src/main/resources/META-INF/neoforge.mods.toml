@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[47,)"
+loaderVersion="[1,)"
 license="All rights reserved"
 issueTrackerURL="https://github.com/${repository}/issues"
 
@@ -12,22 +12,25 @@ issueTrackerURL="https://github.com/${repository}/issues"
     description=''''''
 
 [[dependencies.${mod_id}]]
-    modId="forge"
-    mandatory=true
-    versionRange="[47,)"
-    ordering="NONE"
-    side="BOTH"
+    modId = "neoforge"
+    type = "required"
+    versionRange = "[21,)"
+    ordering = "NONE"
+    side = "BOTH"
 
 [[dependencies.${mod_id}]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.20.1,1.21)"
-    ordering="NONE"
-    side="BOTH"
+    modId = "minecraft"
+    type = "required"
+    versionRange = "[1.21.1,)"
+    ordering = "NONE"
+    side = "BOTH"
 
 [[dependencies.${mod_id}]]
     modId="kotlinforforge"
     mandatory=true
-    versionRange="[4.3.0,)"
+    versionRange="[5.8,)"
     ordering="NONE"
     side="BOTH"
+
+[[mixins]]
+    config="${mod_id}.mixins.json"

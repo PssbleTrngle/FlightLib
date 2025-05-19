@@ -1,4 +1,4 @@
-package com.possible_triangle.dungeon.forge.platform
+package com.possible_triangle.flightlib.forge.services
 
 import com.possible_triangle.flightlib.platform.services.INetwork
 import com.possible_triangle.flightlib.platform.services.ServerMessageBus

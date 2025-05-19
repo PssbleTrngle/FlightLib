@@ -10,9 +10,11 @@ object ForgeSources {
     fun register() {
         IFlightApi.INSTANCE.addSourceCaster {
             listOf {
-                if (it is ItemStack) it.getCapability(ForgeFlightLib.ITEM_CAPABILITY)
-                if (it is Entity) it.getCapability(ForgeFlightLib.ENTITY_CAPABILITY)
-                else null
+                when (it) {
+                    is ItemStack -> it.getCapability(ForgeFlightLib.ITEM_CAPABILITY)
+                    is Entity -> it.getCapability(ForgeFlightLib.ENTITY_CAPABILITY)
+                    else -> null
+                }
             }
         }
     }

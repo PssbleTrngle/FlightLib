@@ -13,7 +13,7 @@ object CommonSources {
         IFlightApi.INSTANCE.addSourceProvider { entity ->
             EquipmentSlot.values().map {
                 val stack = entity.getItemBySlot(it)
-                stack.item to EquipmentSource(it, stack)
+                stack to EquipmentSource(it, stack)
             }
         }
 
