@@ -9,6 +9,5 @@ base {
     archivesName.set("${mod_id}-neoforge-api-${mod_version}")
 }
 
-tasks.withType<JavaCompile> {
-    enabled = false
-}
+tasks.withType<Test> { enabled = false }
+tasks.compileTestJava { enabled = false }
