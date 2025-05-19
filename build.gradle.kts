@@ -1,5 +1,5 @@
 plugins {
-    id("com.possible-triangle.gradle") version "0.0.0-dev"
+    id("com.possible-triangle.gradle") version "0.2.8"
 }
 
 withKotlin()
