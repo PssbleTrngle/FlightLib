@@ -51,3 +51,4 @@ subprojects {
 }
 
 enableSonarQube()
+enableSpotless()

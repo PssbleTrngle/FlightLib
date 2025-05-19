@@ -10,8 +10,9 @@ pluginManagement {
 }
 
 include(
-    "api", "common",
-    "forge-api", "forge",
+    "api",
+    "common",
+    "forge-api",
+    "forge",
     "fabric",
 )
-
