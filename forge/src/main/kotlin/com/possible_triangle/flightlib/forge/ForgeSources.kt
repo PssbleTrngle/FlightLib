@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack
 
 object ForgeSources {
 
+    @JvmStatic
     fun register() {
         IFlightApi.INSTANCE.addSourceCaster {
             listOf {

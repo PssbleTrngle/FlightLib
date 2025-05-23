@@ -5,6 +5,7 @@ import com.possible_triangle.flightlib.api.IJetpack
 
 object FabricSources {
 
+    @JvmStatic
     fun register() {
         IFlightApi.INSTANCE.addSourceCaster {
             listOf {

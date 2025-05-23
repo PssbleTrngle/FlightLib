@@ -22,6 +22,7 @@ object ControlManager {
         entity.setKey(key, pressed)
     }
 
+    @JvmStatic
     fun registerKeybinds(registry: Consumer<KeyMapping>) {
         FlightKey.entries.forEach { key ->
             key.binding = Optional.ofNullable(key.defaultKey).map {

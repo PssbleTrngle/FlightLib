@@ -23,24 +23,25 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 public class ForgeEntrypoint {
 
     public ForgeEntrypoint(IEventBus modBus, Dist dist) {
-        CommonClass.INSTANCE.init();
+        CommonClass.init();
 
         if (dist == Dist.CLIENT) {
             clientInit(modBus);
         }
 
-        ForgeNetwork.Companion.register(modBus);
-        ForgeRegistries.Companion.register(modBus);
-        ForgeSources.INSTANCE.register();
-        CuriosCompat.INSTANCE.register();
+        ForgeNetwork.register(modBus);
+        ForgeRegistries.register(modBus);
+        ForgeSources.register();
+        CuriosCompat.register();
+        ForgeDataAttachment.register(modBus);
 
         NeoForge.EVENT_BUS.addListener((PlayerTickEvent.Pre event) -> JetpackLogic.INSTANCE.onTick(event.getEntity()));
     }
 
     private void clientInit(IEventBus modBus) {
-        CommonClass.INSTANCE.clientInit();
+        CommonClass.clientInit();
 
-        modBus.addListener((RegisterKeyMappingsEvent event) -> ControlManager.INSTANCE.registerKeybinds(event::register));
+        modBus.addListener((RegisterKeyMappingsEvent event) -> ControlManager.registerKeybinds(event::register));
         NeoForge.EVENT_BUS.addListener((InputEvent.Key event) -> ControlSender.INSTANCE.checkKeys());
         NeoForge.EVENT_BUS.addListener((PlayerTickEvent.Pre event) -> {
             if (event.getEntity() instanceof LocalPlayer player) ControlSender.INSTANCE.onTick(player);

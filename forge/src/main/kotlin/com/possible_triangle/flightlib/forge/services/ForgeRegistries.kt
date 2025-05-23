@@ -13,6 +13,7 @@ class ForgeRegistries : IRegistries {
     companion object {
         private val SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, MOD_ID)
 
+        @JvmStatic
         fun register(bus: IEventBus) {
             SOUNDS.register(bus)
         }

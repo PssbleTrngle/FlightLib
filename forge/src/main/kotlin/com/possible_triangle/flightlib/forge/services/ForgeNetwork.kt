@@ -17,6 +17,7 @@ class ForgeNetwork : INetwork {
     companion object {
         private val entries = arrayListOf<PayloadRegistrar.() -> Unit>()
 
+        @JvmStatic
         fun register(modBus: IEventBus) {
             modBus.addListener { event: RegisterPayloadHandlersEvent ->
                 val registrar = event.registrar("1")

@@ -12,10 +12,10 @@ public class FabricEntrypoint implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        CommonClass.INSTANCE.init();
+        CommonClass.init();
 
-        FabricSources.INSTANCE.register();
-        TrinketsCompat.INSTANCE.register();
+        FabricSources.register();
+        TrinketsCompat.register();
 
         ServerTickEvents.START_SERVER_TICK.register(server ->
                 server.getPlayerList().getPlayers().forEach(JetpackLogic.INSTANCE::onTick)

@@ -10,6 +10,7 @@ import top.theillusivec4.curios.api.CuriosApi
 
 object CuriosCompat {
 
+    @JvmStatic
     fun register() {
         if (!Services.PLATFORM.isModLoaded("curios")) return
 

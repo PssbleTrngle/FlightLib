@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack
 
 object TrinketsCompat {
 
+    @JvmStatic
     fun register() {
         if (!Services.PLATFORM.isModLoaded("trinkets")) return
 

@@ -12,9 +12,9 @@ public class FabricClientEntrypoint implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        CommonClass.INSTANCE.clientInit();
+        CommonClass.clientInit();
 
-        ControlManager.INSTANCE.registerKeybinds(KeyBindingHelper::registerKeyBinding);
+        ControlManager.registerKeybinds(KeyBindingHelper::registerKeyBinding);
 
         ClientTickEvents.START_CLIENT_TICK.register(minecraft -> {
             var player = minecraft.player;

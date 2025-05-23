@@ -20,6 +20,7 @@ object ForgeDataAttachment {
             .build()
     }
 
+    @JvmStatic
     fun register(modBus: IEventBus) {
         ATTACHMENT_TYPES.register(modBus)
     }
