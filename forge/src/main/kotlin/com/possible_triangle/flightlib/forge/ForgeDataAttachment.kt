@@ -16,6 +16,7 @@ object ForgeDataAttachment {
     val SETTINGS_ATTACHMENT = ATTACHMENT_TYPES.register("settings") { ->
         AttachmentType.builder<JetpackSettings>(::emptyMap)
             .serialize(FlightLibNetwork.KEYS_CODEC)
+            .copyOnDeath()
             .build()
     }
 
