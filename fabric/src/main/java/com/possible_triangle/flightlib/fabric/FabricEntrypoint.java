@@ -21,7 +21,9 @@ public class FabricEntrypoint implements ModInitializer {
                 server.getPlayerList().getPlayers().forEach(JetpackLogic.INSTANCE::onTick)
         );
 
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> ControlManager.INSTANCE.reset(handler.player));
+        ServerPlayConnectionEvents.JOIN.register((listener, sender, server) ->
+                ControlManager.INSTANCE.load(listener.player)
+        );
     }
 
 }

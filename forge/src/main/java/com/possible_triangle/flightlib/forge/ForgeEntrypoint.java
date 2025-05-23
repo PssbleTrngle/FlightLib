@@ -9,6 +9,7 @@ import com.possible_triangle.flightlib.logic.ControlManager;
 import com.possible_triangle.flightlib.logic.ControlSender;
 import com.possible_triangle.flightlib.logic.JetpackLogic;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -24,7 +25,7 @@ public class ForgeEntrypoint {
     public ForgeEntrypoint(IEventBus modBus, Dist dist) {
         CommonClass.INSTANCE.init();
 
-        if(dist == Dist.CLIENT) {
+        if (dist == Dist.CLIENT) {
             clientInit(modBus);
         }
 
@@ -34,9 +35,6 @@ public class ForgeEntrypoint {
         CuriosCompat.INSTANCE.register();
 
         NeoForge.EVENT_BUS.addListener((PlayerTickEvent.Pre event) -> JetpackLogic.INSTANCE.onTick(event.getEntity()));
-
-        NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerChangedDimensionEvent event) -> ControlManager.INSTANCE.reset(event.getEntity()));
-        NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedOutEvent event) -> ControlManager.INSTANCE.reset(event.getEntity()));
     }
 
     private void clientInit(IEventBus modBus) {
@@ -45,7 +43,13 @@ public class ForgeEntrypoint {
         modBus.addListener((RegisterKeyMappingsEvent event) -> ControlManager.INSTANCE.registerKeybinds(event::register));
         NeoForge.EVENT_BUS.addListener((InputEvent.Key event) -> ControlSender.INSTANCE.checkKeys());
         NeoForge.EVENT_BUS.addListener((PlayerTickEvent.Pre event) -> {
-            if(event.getEntity() instanceof LocalPlayer player) ControlSender.INSTANCE.onTick(player);
+            if (event.getEntity() instanceof LocalPlayer player) ControlSender.INSTANCE.onTick(player);
+        });
+
+        NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                ControlManager.INSTANCE.load(player);
+            }
         });
     }
 
