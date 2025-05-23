@@ -5,30 +5,21 @@ import com.possible_triangle.flightlib.FlightLibNetwork
 import com.possible_triangle.flightlib.api.FlightKey
 import com.possible_triangle.flightlib.logic.network.KeysSyncEvent
 import net.minecraft.client.KeyMapping
-import net.minecraft.network.syncher.EntityDataSerializer
-import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.entity.player.Player
 import java.util.*
 import java.util.function.Consumer
 
 object ControlManager {
 
-    private val DATA_SERIALIZER = EntityDataSerializer.forValueType(FlightLibNetwork.KEYS_STREAM_CODEC)
-    private val DATA_ACCESSOR = SynchedEntityData.defineId(Player::class.java, DATA_SERIALIZER)
-
-    private val CACHE = mutableMapOf<UUID, MutableMap<FlightKey, Boolean>>()
-
     internal fun isPressed(key: FlightKey, entity: LivingEntity): Boolean {
-        val keys = CACHE[entity.uuid] ?: entity.entityData.get(DATA_ACCESSOR)
-        return keys?.get(key) ?: key.default
+        if (entity !is ISettingsStorage) return false
+        return entity.isPressed(key)
     }
 
-    internal fun setKey(player: Player, key: FlightKey, pressed: Boolean) {
-        val keys = CACHE.getOrPut(player.uuid) { mutableMapOf() }
-        keys[key] = pressed
-        player.entityData.set(DATA_ACCESSOR, keys)
+    internal fun setKey(entity: LivingEntity, key: FlightKey, pressed: Boolean) {
+        if (entity !is ISettingsStorage) return
+        entity.setKey(key, pressed)
     }
 
     fun registerKeybinds(registry: Consumer<KeyMapping>) {
@@ -48,9 +39,9 @@ object ControlManager {
     }
 
     fun load(player: ServerPlayer) {
-        val keys = player.entityData.get(DATA_ACCESSOR)
-        CACHE[player.uuid] = keys.toMutableMap()
-        val event = KeysSyncEvent(keys ?: return)
+        if (player !is ISettingsStorage) return
+        val keys = player.`flightlib$get`()
+        val event = KeysSyncEvent(keys)
         FlightLibNetwork.KEYS_SYNC.send(player, event)
     }
 

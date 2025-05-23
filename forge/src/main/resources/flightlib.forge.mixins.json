@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "com.possible_triangle.flightlib.forge.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "refmap": "${mod_id}.refmap.json",
+  "mixins": [
+    "PlayerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
