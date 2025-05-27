@@ -2,7 +2,6 @@ package com.possible_triangle.flightlib.forge
 
 import com.possible_triangle.flightlib.api.Constants
 import com.possible_triangle.flightlib.logic.ISettingsStorage
-import com.possible_triangle.flightlib.logic.JetpackSettings
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.neoforge.attachment.AttachmentType
 import net.neoforged.neoforge.registries.DeferredRegister
@@ -14,7 +13,7 @@ object ForgeDataAttachment {
 
     @JvmField
     val SETTINGS_ATTACHMENT = ATTACHMENT_TYPES.register("settings") { ->
-        AttachmentType.builder<JetpackSettings>(::emptyMap)
+        AttachmentType.builder(ISettingsStorage::DEFAULT)
             .serialize(ISettingsStorage.KEYS_CODEC)
             .copyOnDeath()
             .build()

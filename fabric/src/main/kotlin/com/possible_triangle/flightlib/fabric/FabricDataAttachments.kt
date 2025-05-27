@@ -15,7 +15,7 @@ object FabricDataAttachments {
         it.persistent(ISettingsStorage.KEYS_CODEC)
         it.syncWith(ISettingsStorage.KEYS_STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
         it.copyOnDeath()
-        it.initializer(::emptyMap)
+        it.initializer(ISettingsStorage::DEFAULT)
     }
 
 }

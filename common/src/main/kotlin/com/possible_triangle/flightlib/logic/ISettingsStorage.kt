@@ -20,7 +20,7 @@ interface ISettingsStorage {
 
         val KEYS_CODEC: Codec<JetpackSettings> = Codec.unboundedMap(
             StringRepresentable.fromEnum(FlightKey::values),
-            Codec.BOOL.orElse(false),
+            Codec.BOOL.orElse(true),
         ).xmap(::filter, ::filter)
 
         val KEYS_STREAM_CODEC: StreamCodec<FriendlyByteBuf, JetpackSettings> =
@@ -32,6 +32,12 @@ interface ISettingsStorage {
         private fun encodeKeys(buffer: FriendlyByteBuf, keys: JetpackSettings) {
             buffer.writeMap(keys, FriendlyByteBuf::writeEnum, FriendlyByteBuf::writeBoolean)
         }
+
+        val DEFAULT: JetpackSettings = mapOf(
+            FlightKey.TOGGLE_ACTIVE to true,
+            FlightKey.TOGGLE_HOVER to true,
+        )
+
     }
 
 }
