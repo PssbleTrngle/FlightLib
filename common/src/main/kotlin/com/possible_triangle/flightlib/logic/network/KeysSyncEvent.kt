@@ -1,8 +1,8 @@
 package com.possible_triangle.flightlib.logic.network
 
-import com.possible_triangle.flightlib.FlightLibNetwork
 import com.possible_triangle.flightlib.api.Constants.MOD_ID
 import com.possible_triangle.flightlib.logic.ControlManager
+import com.possible_triangle.flightlib.logic.ISettingsStorage
 import com.possible_triangle.flightlib.logic.JetpackSettings
 import com.possible_triangle.flightlib.platform.Services
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
@@ -15,8 +15,8 @@ class KeysSyncEvent(val settings: JetpackSettings) : CustomPacketPayload {
 
     companion object {
         private val TYPE = CustomPacketPayload.TypeAndCodec(
-            CustomPacketPayload.Type(ResourceLocation.fromNamespaceAndPath(MOD_ID, "key_pressed")),
-            FlightLibNetwork.KEYS_STREAM_CODEC.map(::KeysSyncEvent, KeysSyncEvent::settings)
+            CustomPacketPayload.Type(ResourceLocation.fromNamespaceAndPath(MOD_ID, "keys_sync")),
+            ISettingsStorage.KEYS_STREAM_CODEC.map(::KeysSyncEvent, KeysSyncEvent::settings)
         )
 
         fun register() = Services.NETWORK.serverToClient(TYPE, KeysSyncEvent::handle)

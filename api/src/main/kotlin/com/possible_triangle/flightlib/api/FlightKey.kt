@@ -21,4 +21,5 @@ enum class FlightKey(val toggle: Boolean, val defaultKey: Int? = null, val defau
     fun isPressed(entity: LivingEntity) = IFlightApi.INSTANCE.isPressed(this, entity)
 
     override fun getSerializedName() = name.lowercase()
+
 }
