@@ -23,7 +23,7 @@ object ControlManager {
     }
 
     fun registerKeybinds(registry: Consumer<KeyMapping>) {
-        FlightKey.values().forEach { key ->
+        FlightKey.entries.forEach { key ->
             key.binding = Optional.ofNullable(key.defaultKey).map {
                 KeyMapping(
                     "key.jetpack.${key.name.lowercase()}.description",

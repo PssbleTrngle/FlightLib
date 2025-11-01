@@ -12,12 +12,6 @@ subprojects {
 
     repositories {
         maven {
-            url = uri("https://www.cursemaven.com")
-            content {
-                includeGroup("curse.maven")
-            }
-        }
-        maven {
             url = uri("https://maven.theillusivec4.top/")
             content {
                 includeGroup("top.theillusivec4.curios")
@@ -47,3 +41,4 @@ subprojects {
 }
 
 enableSonarQube()
+enableSpotless()
