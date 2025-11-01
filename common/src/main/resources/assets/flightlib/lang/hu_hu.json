@@ -1,0 +1,11 @@
+{
+  "message.flightlib.control.toggle_active": "Jetpack motor %s",
+  "message.flightlib.control.toggle_hover": "Jetpack lebegés %s",
+  "message.flightlib.control.on": "be",
+  "message.flightlib.control.off": "ki",
+  "overlay.flightlib.control.toggle_hover": "Lebegés",
+  "overlay.flightlib.control.toggle_active": "Aktív",
+  "key.jetpack.toggle_hover.description": "Lebegés váltása",
+  "key.jetpack.toggle_active.description": "Jetpack motor váltása",
+  "flightlib.subtitle.whoosh": "Jetpack szuszogások"
+}
