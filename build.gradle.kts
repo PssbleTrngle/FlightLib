@@ -1,20 +1,16 @@
 plugins {
-    id("com.possible-triangle.gradle") version "0.1.4"
+    id("com.possible-triangle.core")
+    id("com.possible-triangle.vanilla") apply false
+    id("com.possible-triangle.forge") apply false
+    id("com.possible-triangle.fabric") apply false
 }
 
 withKotlin()
 
 subprojects {
+    apply(plugin = "com.possible-triangle.core")
+
     repositories {
-        mavenCentral()
-
-        maven {
-            url = uri("https://repo.spongepowered.org/repository/maven-public/")
-            content {
-                includeGroup("org.spongepowered")
-            }
-        }
-
         maven {
             url = uri("https://www.cursemaven.com")
             content {
@@ -29,17 +25,12 @@ subprojects {
         }
 
         maven {
-            url = uri("https://thedarkcolour.github.io/KotlinForForge/")
-            content {
-                includeGroup("thedarkcolour")
-            }
-        }
-        maven {
             url = uri("https://maven.terraformersmc.com/")
             content {
                 includeGroup("dev.emi")
             }
         }
+
         maven {
             url = uri("https://maven.ladysnake.org/releases")
             content {
@@ -48,9 +39,10 @@ subprojects {
         }
     }
 
-    enablePublishing {
-        githubPackages()
-        localMaven()
+    upload {
+        maven {
+            nexus()
+        }
     }
 }
 

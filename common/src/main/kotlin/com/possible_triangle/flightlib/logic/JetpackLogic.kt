@@ -179,19 +179,23 @@ object JetpackLogic {
             FlyingPose.SUPERMAN -> pitch
             FlyingPose.UPRIGHT -> 0F
         }
-        thrusters.map { it.xRot(xRot) }.map { it.yRot(yaw) }.forEach { pos ->
-            val particle = if (context.entity.isUnderWater) ParticleTypes.BUBBLE
-            else context.jetpack.createParticles()
-            world.addParticle(
-                particle,
-                context.entity.x + pos.x,
-                context.entity.y + pos.y,
-                context.entity.z + pos.z,
-                0.0,
-                -1.0,
-                0.0
-            )
-        }
+        thrusters
+            .map { it.xRot(xRot) }
+            .map { it.yRot(yaw) }
+            .map { it.scale(context.entity.scale.toDouble()) }
+            .forEach { pos ->
+                val particle = if (context.entity.isUnderWater) ParticleTypes.BUBBLE
+                else context.jetpack.createParticles()
+                world.addParticle(
+                    particle,
+                    context.entity.x + pos.x,
+                    context.entity.y + pos.y,
+                    context.entity.z + pos.z,
+                    0.0,
+                    -1.0,
+                    0.0
+                )
+            }
     }
 
 }

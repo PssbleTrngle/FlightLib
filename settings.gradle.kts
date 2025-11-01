@@ -1,18 +1,18 @@
-val mod_name: String by extra
-
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven { url = uri("https://maven.minecraftforge.net/") }
-        maven { url = uri("https://maven.fabricmc.net/") }
-        maven { url = uri("https://repo.spongepowered.org/repository/maven-public/") }
+        mavenLocal()
     }
 }
 
-rootProject.name = mod_name
+plugins {
+    id("com.possible-triangle.helper") version ("1.1")
+}
+
 include(
-    "api", "common",
-    "forge-api", "forge",
+    "api",
+    "common",
+    "forge-api",
+    "forge",
     "fabric",
 )
-

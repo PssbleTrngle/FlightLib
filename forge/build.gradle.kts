@@ -1,5 +1,9 @@
 val curios_forge_version: String by extra
 
+plugins {
+    id("com.possible-triangle.forge")
+}
+
 forge {
     enableMixins()
 
