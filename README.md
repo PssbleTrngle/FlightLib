@@ -4,11 +4,14 @@ This is a library that provides encapsulates the logic used by the [Create Jetpa
 
 ## Using the library
 
-The packages are hosted on GitHub
-
 ```kotlin
 repositories {
-    maven { url = uri("https://maven.pkg.github.com/PssbleTrngle/FlightLib") }
+    maven {
+         url = uri("https://registry.somethingcatchy.net/repository/maven-releases")
+         content {
+            includeGroup("com.possible-triangle")
+         }
+    }
 }
 ```
 
@@ -19,7 +22,7 @@ dependencies {
     compileOnly(fg.deobf("com.possible-triangle:flightlib-api:${flightlib_version}"))
     compileOnly(fg.deobf("com.possible-triangle:flightlib-forge-api:${flightlib_version}"))
     runtimeOnly(fg.deobf("com.possible-triangle:flightlib-forge:${flightlib_version}"))
-    
+
     jarJar("com.possible-triangle:flightlib-forge:${flightlib_version}") {
         jarJar.ranged(this, "[${flightlib_version},)")
     }

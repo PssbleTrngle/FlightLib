@@ -1,9 +1,11 @@
 val curios_forge_version: String by extra
 val mc_version: String by extra
 
-neoforge {
-    enableMixins()
+plugins {
+    id("com.possible-triangle.neoforge")
+}
 
+neoforge {
     dependOn(project(":api"))
     dependOn(project(":forge-api"))
     dependOn(project(":common"))
