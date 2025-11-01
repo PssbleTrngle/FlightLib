@@ -42,7 +42,7 @@ interface ISettingsStorage {
 
 }
 
-fun ISettingsStorage.isPressed(key: FlightKey): Boolean = this.`flightlib$get`()[key] ?: false
+fun ISettingsStorage.isPressed(key: FlightKey): Boolean = this.`flightlib$get`()[key] ?: key.default
 
 fun ISettingsStorage.setKey(key: FlightKey, pressed: Boolean) {
     val keys = `flightlib$get`().toMutableMap()

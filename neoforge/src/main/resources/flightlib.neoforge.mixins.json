@@ -1,10 +1,10 @@
 {
   "required": true,
-  "package": "com.possible_triangle.flightlib.mixins",
+  "package": "com.possible_triangle.flightlib.neoforge.mixins",
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.8",
   "mixins": [
-    "ServerGamePacketListenerImplAccessor"
+    "PlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

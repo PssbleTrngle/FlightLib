@@ -12,7 +12,7 @@ plugins {
 include(
     "api",
     "common",
-    "forge-api",
-    "forge",
+    "neoforge-api",
+    "neoforge",
     "fabric",
 )
