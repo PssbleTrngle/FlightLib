@@ -171,6 +171,7 @@ object JetpackLogic {
 
     private fun spawnParticles(context: Context) {
         val world = context.world
+        if (!world.isClientSide()) return;
 
         val thrusters = context.jetpack.getThrusters(context) ?: return
         val yaw = (context.entity.yBodyRot / 180 * -Math.PI).toFloat()
