@@ -1,8 +1,8 @@
 # <meta>
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>1.0.21</version>
-#    <timestamp>2026-03-21T08:44:38.271Z</timestamp>
-#    <hash>ca7a5bdce8526c2f</hash>
+#    <timestamp>2026-03-21T08:45:39.358Z</timestamp>
+#    <hash>702ab46433dae86</hash>
 # </meta>
 
 name: Bug Report
@@ -36,6 +36,19 @@ body:
     id: version-version
     attributes:
       label: Mod Version
+    validations:
+      required: true
+
+  - type: dropdown
+    id: minecraft-version
+    attributes:
+      label: Minecraft Version
+      multiple: false
+      options:
+        - "1.21"
+        - "1.20"
+        - "1.19"
+        - "1.18"
     validations:
       required: true
 
