@@ -1,8 +1,8 @@
 # <meta>
 #    <source>@pssbletrngle/github-meta-generator</source>
 #    <version>1.0.21</version>
-#    <timestamp>2026-03-21T08:44:51.435Z</timestamp>
-#    <hash>48f387f708323e5f</hash>
+#    <timestamp>2026-03-21T08:45:39.303Z</timestamp>
+#    <hash>b15a1caa2b17072b</hash>
 # </meta>
 
 neoforge:
@@ -16,3 +16,7 @@ forge:
   - "/^1.21$/m"
 1.20.x:
   - "/^1.20$/m"
+1.19.x:
+  - "/^1.19$/m"
+1.18.x:
+  - "/^1.18$/m"
