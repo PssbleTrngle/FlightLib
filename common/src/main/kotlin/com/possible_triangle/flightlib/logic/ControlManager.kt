@@ -11,13 +11,19 @@ import java.util.*
 import java.util.function.Consumer
 
 object ControlManager {
-
-    internal fun isPressed(key: FlightKey, entity: LivingEntity): Boolean {
+    internal fun isPressed(
+        key: FlightKey,
+        entity: LivingEntity,
+    ): Boolean {
         if (entity !is ISettingsStorage) return false
         return entity.isPressed(key)
     }
 
-    internal fun setKey(entity: LivingEntity, key: FlightKey, pressed: Boolean) {
+    internal fun setKey(
+        entity: LivingEntity,
+        key: FlightKey,
+        pressed: Boolean,
+    ) {
         if (entity !is ISettingsStorage) return
         entity.setKey(key, pressed)
     }
@@ -25,14 +31,15 @@ object ControlManager {
     @JvmStatic
     fun registerKeybinds(registry: Consumer<KeyMapping>) {
         FlightKey.entries.forEach { key ->
-            key.binding = Optional.ofNullable(key.defaultKey).map {
-                KeyMapping(
-                    "key.jetpack.${key.name.lowercase()}.description",
-                    InputConstants.Type.KEYSYM,
-                    it,
-                    "key.categories.movement.jetpack"
-                )
-            }
+            key.binding =
+                Optional.ofNullable(key.defaultKey).map {
+                    KeyMapping(
+                        "key.jetpack.${key.name.lowercase()}.description",
+                        InputConstants.Type.KEYSYM,
+                        it,
+                        "key.categories.movement.jetpack",
+                    )
+                }
             key.binding.ifPresent {
                 registry.accept(it)
             }
@@ -40,10 +47,8 @@ object ControlManager {
     }
 
     fun load(player: ServerPlayer) {
-        if (player !is ISettingsStorage) return
         val keys = player.`flightlib$get`()
         val event = KeysSyncEvent(keys)
         FlightLibNetwork.KEYS_SYNC.send(player, event)
     }
-
 }

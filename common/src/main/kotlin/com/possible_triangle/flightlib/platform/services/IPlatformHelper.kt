@@ -22,5 +22,4 @@ interface IPlatformHelper {
      * @return True if in a development environment, false otherwise.
      */
     val isDevelopmentEnvironment: Boolean
-
 }

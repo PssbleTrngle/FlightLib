@@ -10,11 +10,13 @@ fun interface ServerMessageBus<TMessage> {
 }
 
 fun interface ClientMessageBus<TMessage> {
-    fun send(player: ServerPlayer, message: TMessage)
+    fun send(
+        player: ServerPlayer,
+        message: TMessage,
+    )
 }
 
 interface INetwork {
-
     fun <TMessage : CustomPacketPayload> clientToServer(
         type: CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, TMessage>,
         handler: (TMessage, ServerPlayer) -> Unit,
@@ -24,5 +26,4 @@ interface INetwork {
         type: CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, TMessage>,
         handler: (TMessage, Player) -> Unit,
     ): ClientMessageBus<TMessage>
-
 }

@@ -6,7 +6,6 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.item.ItemStack
 
 object ForgeSources {
-
     @JvmStatic
     fun register() {
         IFlightApi.INSTANCE.addSourceCaster {
@@ -19,5 +18,4 @@ object ForgeSources {
             }
         }
     }
-
 }

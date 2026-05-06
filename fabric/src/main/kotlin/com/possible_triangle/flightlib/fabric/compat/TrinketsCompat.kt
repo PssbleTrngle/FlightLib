@@ -9,7 +9,6 @@ import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.item.ItemStack
 
 object TrinketsCompat {
-
     @JvmStatic
     fun register() {
         if (!Services.PLATFORM.isModLoaded("trinkets")) return
@@ -19,12 +18,12 @@ object TrinketsCompat {
 
     private fun getTrinketsStacks(entity: LivingEntity): List<Pair<ItemStack, ISource>> {
         val trinkets = TrinketsApi.getTrinketComponent(entity)
-        return trinkets.map {
-            it.allEquipped.map { tuple ->
-                val stack = tuple.b
-                stack to TrinketsSource(tuple.a.index, stack)
-            }
-        }.orElseGet(::emptyList)
+        return trinkets
+            .map {
+                it.allEquipped.map { tuple ->
+                    val stack = tuple.b
+                    stack to TrinketsSource(tuple.a.index, stack)
+                }
+            }.orElseGet(::emptyList)
     }
-
 }

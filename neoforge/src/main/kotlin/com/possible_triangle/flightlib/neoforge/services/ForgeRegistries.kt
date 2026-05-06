@@ -9,7 +9,6 @@ import net.neoforged.neoforge.common.NeoForgeMod
 import net.neoforged.neoforge.registries.DeferredRegister
 
 class ForgeRegistries : IRegistries {
-
     companion object {
         private val SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, MOD_ID)
 

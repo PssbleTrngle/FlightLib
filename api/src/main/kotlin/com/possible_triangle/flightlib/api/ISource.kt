@@ -3,8 +3,10 @@ package com.possible_triangle.flightlib.api
 import net.minecraft.world.entity.LivingEntity
 
 interface ISource {
-
-    data class ProviderEntry(val source: ISource, val provider: () -> IJetpack?)
+    data class ProviderEntry(
+        val source: ISource,
+        val provider: () -> IJetpack?,
+    )
 
     fun isDisabled(context: IJetpack.Context) = false
 

@@ -8,14 +8,12 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.player.LocalPlayer
 
 object ControlSender {
+    private var lastPresses = mutableMapOf<FlightKey, Long>()
 
-    private var LAST_PRESS = mutableMapOf<FlightKey, Long>()
-
-    private fun FlightKey.canPressAgain(): Boolean {
-        return LAST_PRESS[this]?.let {
+    private fun FlightKey.canPressAgain(): Boolean =
+        lastPresses[this]?.let {
             (System.currentTimeMillis() - it) > 150
         } ?: true
-    }
 
     private fun send(event: KeyPressedEvent) {
         val player = Minecraft.getInstance().player ?: return
@@ -32,7 +30,7 @@ object ControlSender {
             .filter { it.binding.get().isDown }
             .filter { it.canPressAgain() }
             .forEach { key ->
-                LAST_PRESS[key] = System.currentTimeMillis()
+                lastPresses[key] = System.currentTimeMillis()
                 send(KeyPressedEvent(key, !key.isPressed(player), true))
             }
     }
@@ -48,5 +46,4 @@ object ControlSender {
         send(KeyPressedEvent(FlightKey.FORWARD, player.input.forwardImpulse > 0))
         send(KeyPressedEvent(FlightKey.BACKWARD, player.input.forwardImpulse < 0))
     }
-
 }

@@ -8,20 +8,20 @@ import net.neoforged.neoforge.registries.DeferredRegister
 import net.neoforged.neoforge.registries.NeoForgeRegistries
 
 object ForgeDataAttachment {
-
     private val ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, Constants.MOD_ID)
 
     @JvmField
-    val SETTINGS_ATTACHMENT = ATTACHMENT_TYPES.register("settings") { ->
-        AttachmentType.builder(ISettingsStorage::DEFAULT)
-            .serialize(ISettingsStorage.KEYS_CODEC)
-            .copyOnDeath()
-            .build()
-    }
+    val SETTINGS_ATTACHMENT =
+        ATTACHMENT_TYPES.register("settings") { _ ->
+            AttachmentType
+                .builder(ISettingsStorage::DEFAULT)
+                .serialize(ISettingsStorage.KEYS_CODEC)
+                .copyOnDeath()
+                .build()
+        }
 
     @JvmStatic
     fun register(modBus: IEventBus) {
         ATTACHMENT_TYPES.register(modBus)
     }
-
 }

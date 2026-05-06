@@ -31,5 +31,6 @@
     "minecraft": ">=1.21.1",
     "fabric-language-kotlin": "*",
     "java": ">=21"
-  }
+  },
+  "accessWidener": "${mod_id}.accesswidener"
 }

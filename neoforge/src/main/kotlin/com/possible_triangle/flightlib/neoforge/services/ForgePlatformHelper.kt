@@ -5,11 +5,9 @@ import net.neoforged.fml.ModList
 import net.neoforged.fml.loading.FMLLoader
 
 class ForgePlatformHelper : IPlatformHelper {
-
     override val platformName = "NeoForge"
 
     override fun isModLoaded(modId: String) = ModList.get().isLoaded(modId)
 
     override val isDevelopmentEnvironment get() = !FMLLoader.isProduction()
-
 }

@@ -13,7 +13,6 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
 import net.neoforged.neoforge.network.registration.PayloadRegistrar
 
 class ForgeNetwork : INetwork {
-
     companion object {
         private val entries = arrayListOf<PayloadRegistrar.() -> Unit>()
 
@@ -28,7 +27,7 @@ class ForgeNetwork : INetwork {
 
     override fun <TMessage : CustomPacketPayload> clientToServer(
         type: CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, TMessage>,
-        handler: (TMessage, ServerPlayer) -> Unit
+        handler: (TMessage, ServerPlayer) -> Unit,
     ): ServerMessageBus<TMessage> {
         entries.add {
             playToServer(type.type(), type.codec()) { message, context ->
@@ -43,7 +42,7 @@ class ForgeNetwork : INetwork {
 
     override fun <TMessage : CustomPacketPayload> serverToClient(
         type: CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, TMessage>,
-        handler: (TMessage, Player) -> Unit
+        handler: (TMessage, Player) -> Unit,
     ): ClientMessageBus<TMessage> {
         entries.add {
             playToClient(type.type(), type.codec()) { message, context ->
@@ -55,5 +54,4 @@ class ForgeNetwork : INetwork {
             PacketDistributor.sendToPlayer(player, it)
         }
     }
-
 }

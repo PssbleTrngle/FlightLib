@@ -9,7 +9,6 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 
 object CommonSources {
-
     fun register() {
         IFlightApi.INSTANCE.addSourceProvider { entity ->
             EquipmentSlot.entries.map {
@@ -25,15 +24,17 @@ object CommonSources {
         if (Services.PLATFORM.isDevelopmentEnvironment) {
             IFlightApi.INSTANCE.addSourceCaster {
                 listOf {
-                    if (it !is ItemStack) null
-                    else when (it.item) {
-                        Items.DIAMOND_CHESTPLATE -> DevJetpack
-                        Items.SHIELD -> DevJetpack
-                        else -> null
+                    if (it !is ItemStack) {
+                        null
+                    } else {
+                        when (it.item) {
+                            Items.DIAMOND_CHESTPLATE -> DevJetpack
+                            Items.SHIELD -> DevJetpack
+                            else -> null
+                        }
                     }
                 }
             }
         }
     }
-
 }

@@ -6,7 +6,6 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
 
 interface IJetpack {
-
     data class Context(
         val jetpack: IJetpack,
         val entity: LivingEntity,
@@ -20,30 +19,25 @@ interface IJetpack {
                 world: Level,
                 pose: FlyingPose,
                 source: ISource,
-            ): (IJetpack) -> Context {
-                return { Context(it, entity, world, pose, source) }
-            }
+            ): (IJetpack) -> Context = { Context(it, entity, world, pose, source) }
         }
     }
 
-    fun activeType(context: Context): ControlType {
-        return ControlType.ALWAYS
-    }
+    fun activeType(context: Context): ControlType = ControlType.ALWAYS
 
     fun horizontalSpeed(context: Context): Double
+
     fun verticalSpeed(context: Context): Double
+
     fun acceleration(context: Context): Double
 
-
     fun hoverType(context: Context): ControlType
-    fun hoverSpeed(context: Context): Double
-    fun hoverVerticalSpeed(context: Context): Double {
-        return verticalSpeed(context) * 0.8
-    }
 
-    fun hoverHorizontalSpeed(context: Context): Double {
-        return horizontalSpeed(context) * 0.8
-    }
+    fun hoverSpeed(context: Context): Double
+
+    fun hoverVerticalSpeed(context: Context): Double = verticalSpeed(context) * 0.8
+
+    fun hoverHorizontalSpeed(context: Context): Double = horizontalSpeed(context) * 0.8
 
     fun swimModifier(context: Context): Double
 
@@ -53,6 +47,7 @@ interface IJetpack {
     fun elytraBoost(): Double = 1.25
 
     fun isValid(context: Context): Boolean
+
     fun isUsable(context: Context): Boolean
 
     fun onUse(context: Context) {}
@@ -63,9 +58,7 @@ interface IJetpack {
      */
     fun getThrusters(context: Context): List<Vec3>?
 
-    fun isHovering(context: Context): Boolean {
-        return IFlightApi.INSTANCE.isActive(hoverType(context), FlightKey.TOGGLE_HOVER, context.entity)
-    }
+    fun isHovering(context: Context): Boolean = IFlightApi.INSTANCE.isActive(hoverType(context), FlightKey.TOGGLE_HOVER, context.entity)
 
     fun isThrusting(context: Context): Boolean {
         val entity = context.entity
@@ -73,14 +66,15 @@ interface IJetpack {
         if (!IFlightApi.INSTANCE.isActive(
                 context.jetpack.activeType(context),
                 FlightKey.TOGGLE_ACTIVE,
-                entity
+                entity,
             )
-        ) return false
+        ) {
+            return false
+        }
         if (context.pose == FlyingPose.SUPERMAN && entity.deltaMovement.length() > 0.1) return true
         if (isHovering(context) && !entity.onGround()) return true
         return FlightKey.UP.isPressed(entity)
     }
 
     fun createParticles(): ParticleOptions
-
 }

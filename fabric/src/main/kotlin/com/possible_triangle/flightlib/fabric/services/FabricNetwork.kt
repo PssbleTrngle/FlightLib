@@ -12,10 +12,9 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 
 class FabricNetwork : INetwork {
-
     override fun <TMessage : CustomPacketPayload> clientToServer(
         type: CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, TMessage>,
-        handler: (TMessage, ServerPlayer) -> Unit
+        handler: (TMessage, ServerPlayer) -> Unit,
     ): ServerMessageBus<TMessage> {
         PayloadTypeRegistry.playC2S().register(type.type(), type.codec())
 
@@ -30,7 +29,7 @@ class FabricNetwork : INetwork {
 
     override fun <TMessage : CustomPacketPayload> serverToClient(
         type: CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, TMessage>,
-        handler: (TMessage, Player) -> Unit
+        handler: (TMessage, Player) -> Unit,
     ): ClientMessageBus<TMessage> {
         PayloadTypeRegistry.playS2C().register(type.type(), type.codec())
 
@@ -42,5 +41,4 @@ class FabricNetwork : INetwork {
             ServerPlayNetworking.send(player, it)
         }
     }
-
 }

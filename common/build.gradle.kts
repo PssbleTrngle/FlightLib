@@ -4,4 +4,6 @@ plugins {
 
 common {
     dependOn(project(":api"))
+
+    injectInterfaces()
 }

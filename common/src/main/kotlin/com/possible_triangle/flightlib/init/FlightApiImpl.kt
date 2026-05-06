@@ -31,35 +31,44 @@ object FlightApiImpl : IFlightApi {
     override fun findJetpack(entity: LivingEntity): IJetpack.Context? {
         val world = entity.level() ?: return null
         val pose = FlyingPose.get(entity)
-        return getAll(entity).asSequence().map { it.source to it.provider() }
+        return getAll(entity)
+            .asSequence()
+            .map { it.source to it.provider() }
             .filter { (_, jetpack) -> jetpack != null }
             .map { (source, jetpack) -> IJetpack.Context.builder(entity, world, pose, source) to jetpack }
             .map { (builder, jetpack) -> builder to jetpack!! }
-            .map { (builder, jetpack) -> builder(jetpack) }.filter { it.jetpack.isValid(it) }.firstOrNull()
+            .map { (builder, jetpack) -> builder(jetpack) }
+            .filter { it.jetpack.isValid(it) }
+            .firstOrNull()
     }
 
-    override fun isActive(type: ControlType, key: FlightKey, entity: LivingEntity): Boolean {
-        return when (type) {
+    override fun isActive(
+        type: ControlType,
+        key: FlightKey,
+        entity: LivingEntity,
+    ): Boolean =
+        when (type) {
             ControlType.ALWAYS -> true
             ControlType.NEVER -> false
             ControlType.TOGGLE -> key.isPressed(entity)
         }
-    }
 
-    private fun IJetpack.Context.isUsable(): Boolean {
-        return jetpack.isUsable(this) && !source.isDisabled(this)
-    }
+    private fun IJetpack.Context.isUsable(): Boolean = jetpack.isUsable(this) && !source.isDisabled(this)
 
     override fun findActiveJetpack(entity: LivingEntity): IJetpack.Context? {
         if (entity is Player && entity.abilities.flying) return null
-        return findJetpack(entity)?.takeIf {
-            isActive(
-                it.jetpack.activeType(it),
-                FlightKey.TOGGLE_ACTIVE,
-                entity
-            )
-        }?.takeIf { it.isUsable() }
+        return findJetpack(entity)
+            ?.takeIf {
+                isActive(
+                    it.jetpack.activeType(it),
+                    FlightKey.TOGGLE_ACTIVE,
+                    entity,
+                )
+            }?.takeIf { it.isUsable() }
     }
 
-    override fun isPressed(key: FlightKey, entity: LivingEntity) = ControlManager.isPressed(key, entity)
+    override fun isPressed(
+        key: FlightKey,
+        entity: LivingEntity,
+    ) = ControlManager.isPressed(key, entity)
 }

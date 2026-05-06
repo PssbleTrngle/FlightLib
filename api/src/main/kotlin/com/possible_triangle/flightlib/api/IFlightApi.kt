@@ -3,8 +3,8 @@ package com.possible_triangle.flightlib.api
 import net.minecraft.world.entity.LivingEntity
 
 interface IFlightApi {
-
     companion object {
+        @Suppress("ktlint:standard:property-naming")
         lateinit var INSTANCE: IFlightApi
             private set
 
@@ -21,10 +21,16 @@ interface IFlightApi {
 
     fun findJetpack(entity: LivingEntity): IJetpack.Context?
 
-    fun isActive(type: ControlType, key: FlightKey, entity: LivingEntity): Boolean
+    fun isActive(
+        type: ControlType,
+        key: FlightKey,
+        entity: LivingEntity,
+    ): Boolean
 
-    fun isPressed(key: FlightKey, entity: LivingEntity): Boolean
+    fun isPressed(
+        key: FlightKey,
+        entity: LivingEntity,
+    ): Boolean
 
     fun findActiveJetpack(entity: LivingEntity): IJetpack.Context?
-
 }

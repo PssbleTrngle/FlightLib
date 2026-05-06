@@ -23,30 +23,38 @@ import kotlin.math.max
 import kotlin.math.min
 
 object JetpackLogic {
-
-    private val DIRECTIONS = listOf(
-        FlightKey.BACKWARD to Vec3(0.0, 0.0, -1.0).scale(0.8),
-        FlightKey.FORWARD to Vec3(0.0, 0.0, 1.0).scale(1.2),
-        FlightKey.LEFT to Vec3(1.0, 0.0, 0.0),
-        FlightKey.RIGHT to Vec3(-1.0, 0.0, 0.0),
-    )
+    private val DIRECTIONS =
+        listOf(
+            FlightKey.BACKWARD to Vec3(0.0, 0.0, -1.0).scale(0.8),
+            FlightKey.FORWARD to Vec3(0.0, 0.0, 1.0).scale(1.2),
+            FlightKey.LEFT to Vec3(1.0, 0.0, 0.0),
+            FlightKey.RIGHT to Vec3(-1.0, 0.0, 0.0),
+        )
 
     private val ATTRIBUTE_ID = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "boost")
 
-    private fun handleSwimModifier(entity: LivingEntity, context: Context?) {
+    private fun handleSwimModifier(
+        entity: LivingEntity,
+        context: Context?,
+    ) {
         val attribute = Services.REGISTRIES.swimSpeed?.let { entity.getAttribute(it) } ?: return
 
         val hasModifier = attribute.getModifier(ATTRIBUTE_ID) != null
         val shouldHaveModifier = context?.pose == FlyingPose.SUPERMAN && entity.isUnderWater
 
-        if (!shouldHaveModifier && hasModifier) attribute.removeModifier(ATTRIBUTE_ID)
-        else if (shouldHaveModifier && !hasModifier) {
+        if (!shouldHaveModifier && hasModifier) {
+            attribute.removeModifier(ATTRIBUTE_ID)
+        } else if (shouldHaveModifier && !hasModifier) {
             val modifier = context.jetpack.swimModifier(context)
-            if (modifier > 0) attribute.addPermanentModifier(
-                AttributeModifier(
-                    ATTRIBUTE_ID, modifier, Operation.ADD_MULTIPLIED_TOTAL
+            if (modifier > 0) {
+                attribute.addPermanentModifier(
+                    AttributeModifier(
+                        ATTRIBUTE_ID,
+                        modifier,
+                        Operation.ADD_MULTIPLIED_TOTAL,
+                    ),
                 )
-            )
+            }
         }
     }
 
@@ -56,10 +64,11 @@ object JetpackLogic {
 
         if (context == null) return
 
-        val isUsed = when (context.pose) {
-            FlyingPose.SUPERMAN -> elytraBoost(context)
-            FlyingPose.UPRIGHT -> uprightMovement(context)
-        }
+        val isUsed =
+            when (context.pose) {
+                FlyingPose.SUPERMAN -> elytraBoost(context)
+                FlyingPose.UPRIGHT -> uprightMovement(context)
+            }
 
         if (isUsed && context.jetpack.isThrusting(context)) {
             spawnParticles(context)
@@ -74,20 +83,28 @@ object JetpackLogic {
         val volume = if (FlightKey.UP.isPressed(context.entity)) 2F else 1F
         val pitch = context.world.random.nextFloat() * 0.4F + 1F
 
-        fun SoundEvent.play(volume: Float = 1F, pitch: Float = 1F) {
+        fun SoundEvent.play(
+            volume: Float = 1F,
+            pitch: Float = 1F,
+        ) {
             context.world.playSound(
-                null, pos, this, SoundSource.PLAYERS, volume, pitch
+                null,
+                pos,
+                this,
+                SoundSource.PLAYERS,
+                volume,
+                pitch,
             )
         }
 
         if (context.entity.isUnderWater) {
-
             if (context.world.gameTime % 10 != 0L) return
 
-            val (sound, volumeModifier) = when (context.pose) {
-                FlyingPose.SUPERMAN -> SoundEvents.BUBBLE_COLUMN_UPWARDS_INSIDE to -0.5F
-                else -> SoundEvents.BUBBLE_COLUMN_UPWARDS_AMBIENT to 0F
-            }
+            val (sound, volumeModifier) =
+                when (context.pose) {
+                    FlyingPose.SUPERMAN -> SoundEvents.BUBBLE_COLUMN_UPWARDS_INSIDE to -0.5F
+                    else -> SoundEvents.BUBBLE_COLUMN_UPWARDS_AMBIENT to 0F
+                }
 
             sound.play(volume + volumeModifier, pitch - 0.5F)
         } else {
@@ -107,12 +124,12 @@ object JetpackLogic {
         if (entity.level().gameTime % 15 == 0L) {
             val look = entity.lookAngle
             val factor = { i: Double -> (i * 0.1 + (i * boost - i) * 0.5) }
-            entity.deltaMovement = entity.deltaMovement.add(
-                factor(look.x),
-                factor(look.y),
-                factor(look.z),
-            )
-
+            entity.deltaMovement =
+                entity.deltaMovement.add(
+                    factor(look.x),
+                    factor(look.y),
+                    factor(look.z),
+                )
         }
 
         return true
@@ -127,25 +144,35 @@ object JetpackLogic {
         if (ctx.entity.vehicle != null) return false
         if (ctx.entity.onGround() && !buttonUp) return false
 
-        val verticalSpeed = if (hovering) ctx.jetpack.hoverVerticalSpeed(ctx)
-        else ctx.jetpack.verticalSpeed(ctx)
+        val verticalSpeed =
+            if (hovering) {
+                ctx.jetpack.hoverVerticalSpeed(ctx)
+            } else {
+                ctx.jetpack.verticalSpeed(ctx)
+            }
 
-        val horizontalSpeed = if (hovering) {
-            if (entity.isUnderWater) 0.0
-            else ctx.jetpack.hoverHorizontalSpeed(ctx)
-        } else ctx.jetpack.horizontalSpeed(ctx)
+        val horizontalSpeed =
+            if (hovering) {
+                if (entity.isUnderWater) {
+                    0.0
+                } else {
+                    ctx.jetpack.hoverHorizontalSpeed(ctx)
+                }
+            } else {
+                ctx.jetpack.horizontalSpeed(ctx)
+            }
         val acceleration = ctx.jetpack.acceleration(ctx)
 
-        val speed = when {
-            buttonUp && !buttonDown -> verticalSpeed
-            buttonDown && !buttonUp -> -verticalSpeed
-            hovering && entity.isUnderWater -> 0.0
-            hovering -> ctx.jetpack.hoverSpeed(ctx)
-            else -> null
-        }
+        val speed =
+            when {
+                buttonUp && !buttonDown -> verticalSpeed
+                buttonDown && !buttonUp -> -verticalSpeed
+                hovering && entity.isUnderWater -> 0.0
+                hovering -> ctx.jetpack.hoverSpeed(ctx)
+                else -> null
+            }
 
         if (speed != null) {
-
             if (entity is Player) {
                 DIRECTIONS.filter { it.first.isPressed(entity) }.forEach {
                     val vec = Vec3(it.second.x, 0.0, it.second.z).scale(horizontalSpeed)
@@ -155,14 +182,18 @@ object JetpackLogic {
 
             val motion = entity.deltaMovement
 
-            val motionY = if (speed <= 0) max(motion.y, speed)
-            else min(motion.y + acceleration, speed)
+            val motionY =
+                if (speed <= 0) {
+                    max(motion.y, speed)
+                } else {
+                    min(motion.y + acceleration, speed)
+                }
 
             entity.setDeltaMovement(motion.x, motionY, motion.z)
 
             if (entity is ServerPlayer) {
                 entity.fallDistance = 0F
-                (entity.connection as ServerGamePacketListenerImplAccessor).setAboveGroundTickCount(0);
+                (entity.connection as ServerGamePacketListenerImplAccessor).setAboveGroundTickCount(0)
             }
         }
 
@@ -171,22 +202,27 @@ object JetpackLogic {
 
     private fun spawnParticles(context: Context) {
         val world = context.world
-        if (!world.isClientSide()) return;
+        if (!world.isClientSide()) return
 
         val thrusters = context.jetpack.getThrusters(context) ?: return
         val yaw = (context.entity.yBodyRot / 180 * -Math.PI).toFloat()
         val pitch = (context.entity.xRot / 180 * -Math.PI).toFloat()
-        val xRot = when (context.pose) {
-            FlyingPose.SUPERMAN -> pitch
-            FlyingPose.UPRIGHT -> 0F
-        }
+        val xRot =
+            when (context.pose) {
+                FlyingPose.SUPERMAN -> pitch
+                FlyingPose.UPRIGHT -> 0F
+            }
         thrusters
             .map { it.xRot(xRot) }
             .map { it.yRot(yaw) }
             .map { it.scale(context.entity.scale.toDouble()) }
             .forEach { pos ->
-                val particle = if (context.entity.isUnderWater) ParticleTypes.BUBBLE
-                else context.jetpack.createParticles()
+                val particle =
+                    if (context.entity.isUnderWater) {
+                        ParticleTypes.BUBBLE
+                    } else {
+                        context.jetpack.createParticles()
+                    }
                 world.addParticle(
                     particle,
                     context.entity.x + pos.x,
@@ -194,9 +230,8 @@ object JetpackLogic {
                     context.entity.z + pos.z,
                     0.0,
                     -1.0,
-                    0.0
+                    0.0,
                 )
             }
     }
-
 }

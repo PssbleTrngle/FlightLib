@@ -10,10 +10,10 @@ import net.minecraft.sounds.SoundEvent
 import kotlin.jvm.optionals.getOrNull
 
 class FabricRegistries : IRegistries {
-
-    private val memoizedSwimSpeed = Suppliers.memoize {
-        BuiltInRegistries.ATTRIBUTE.getHolder(ResourceLocation.fromNamespaceAndPath("porting_lib", "swim_speed")).getOrNull()
-    }
+    private val memoizedSwimSpeed =
+        Suppliers.memoize {
+            BuiltInRegistries.ATTRIBUTE.getHolder(ResourceLocation.fromNamespaceAndPath("porting_lib", "swim_speed")).getOrNull()
+        }
 
     override val swimSpeed get() = memoizedSwimSpeed.get()
 
@@ -22,5 +22,4 @@ class FabricRegistries : IRegistries {
         val registered = Registry.register(BuiltInRegistries.SOUND_EVENT, id, SoundEvent.createVariableRangeEvent(id))
         return { registered }
     }
-
 }
