@@ -1,8 +1,8 @@
 # <meta>
 #    <source>@pssbletrngle/github-meta-generator</source>
-#    <version>1.0.57</version>
-#    <timestamp>2026-05-12T05:58:30.584Z</timestamp>
-#    <hash>d61ddd6382fe1a9c</hash>
+#    <version>1.0.59</version>
+#    <timestamp>2026-05-12T15:03:54.112Z</timestamp>
+#    <hash>5e6f79604e4007de</hash>
 # </meta>
 
 name: Release
@@ -41,3 +41,10 @@ jobs:
           RELEASE_VERSION: ${{ github.event.release.tag_name }}
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
           NEXUS_TOKEN: ${{ secrets.NEXUS_TOKEN }}
+
+      - name: Publish Release Metadata
+        uses: actions/upload-artifact@v7
+        with:
+          archive: false
+          path: build/release.json
+          retention-days: 1
