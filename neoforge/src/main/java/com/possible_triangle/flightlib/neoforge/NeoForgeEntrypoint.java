@@ -36,6 +36,23 @@ public class NeoForgeEntrypoint {
         ForgeDataAttachment.register(modBus);
 
         NeoForge.EVENT_BUS.addListener((PlayerTickEvent.Pre event) -> JetpackLogic.INSTANCE.onTick(event.getEntity()));
+
+        NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                ControlManager.INSTANCE.load(player);
+            }
+        });
+        NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerChangedDimensionEvent event) -> {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                ControlManager.INSTANCE.load(player);
+            }
+        });
+        NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerRespawnEvent event) -> {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                ControlManager.INSTANCE.load(player);
+            }
+        });
+
     }
 
     private void clientInit(IEventBus modBus) {
@@ -47,11 +64,6 @@ public class NeoForgeEntrypoint {
             if (event.getEntity() instanceof LocalPlayer player) ControlSender.INSTANCE.onTick(player);
         });
 
-        NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
-            if (event.getEntity() instanceof ServerPlayer player) {
-                ControlManager.INSTANCE.load(player);
-            }
-        });
     }
 
 }
