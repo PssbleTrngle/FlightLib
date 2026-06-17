@@ -1,8 +1,8 @@
 # <meta>
 #    <source>@pssbletrngle/github-meta-generator</source>
-#    <version>1.0.84</version>
-#    <timestamp>2026-06-08T09:57:00.887Z</timestamp>
-#    <hash>b213b0b5cf8b7955</hash>
+#    <version>1.0.93</version>
+#    <timestamp>2026-06-17T16:45:16.037Z</timestamp>
+#    <hash>8f18db6e4167143f</hash>
 # </meta>
 
 name: Release
@@ -21,11 +21,11 @@ jobs:
       contents: read
       packages: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           lfs: true
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           java-version: 26
           distribution: temurin
