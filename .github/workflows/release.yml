@@ -1,8 +1,8 @@
 # <meta>
 #    <source>@pssbletrngle/github-meta-generator</source>
-#    <version>1.0.106</version>
-#    <timestamp>2026-06-30T08:06:06.104Z</timestamp>
-#    <hash>25410cc0f9e30556</hash>
+#    <version>1.0.107</version>
+#    <timestamp>2026-07-24T11:27:58.764Z</timestamp>
+#    <hash>bcaa125a8d1ccf50</hash>
 # </meta>
 
 name: Release
@@ -21,7 +21,7 @@ jobs:
       contents: read
       packages: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           lfs: true
 
