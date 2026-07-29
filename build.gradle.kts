@@ -33,11 +33,7 @@ subprojects {
         }
     }
 
-    upload {
-        maven {
-            nexus()
-        }
-    }
+    upload.maven.nexus()
 }
 
 enableSonarQube()
