@@ -1,6 +1,3 @@
-val trinkets_version: String by extra
-val cca_version: String by extra
-
 plugins {
     id("com.possible-triangle.fabric")
 }
@@ -13,8 +10,8 @@ fabric {
 }
 
 dependencies {
-    modImplementation("dev.emi:trinkets:${trinkets_version}")
-    modImplementation("org.ladysnake.cardinal-components-api:cardinal-components-base:${cca_version}")
+    modImplementation(libs.trinkets)
+    modImplementation(libs.cardinal.components.base)
 }
 
 tasks.test {
