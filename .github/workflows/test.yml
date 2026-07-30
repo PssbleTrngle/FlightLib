@@ -1,8 +1,8 @@
 # <meta>
 #    <source>@pssbletrngle/github-meta-generator</source>
-#    <version>1.0.107</version>
-#    <timestamp>2026-07-24T11:27:58.764Z</timestamp>
-#    <hash>ded3a8190abf9b96</hash>
+#    <version>1.0.114</version>
+#    <timestamp>2026-07-30T07:43:28.708Z</timestamp>
+#    <hash>53ceb3a83858f38c</hash>
 # </meta>
 
 name: Test
@@ -60,17 +60,8 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - uses: PssbleTrngle/find-release@v1
-        if: ${{ github.event_name != 'pull_request' }}
-        id: draft
-        with:
-          type: draft
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Test
         run: ./gradlew build check --stacktrace
-        env:
-          RELEASE_VERSION: ${{ steps.action.outputs.tag }}
 
       - name: Analyze
         if: ${{ github.event_name != 'pull_request' }}
@@ -80,13 +71,3 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           GITHUB_DEPENDENCY_GRAPH_ENABLED: false
-
-      - name: Publish -SNAPSHOT version
-        if: ${{ github.event_name != 'pull_request' && fromJSON(steps.draft.outputs.matched) }}
-        run: ./gradlew publish
-        continue-on-error: true
-        env:
-          NEXUS_USER: ${{ secrets.NEXUS_USER }}
-          NEXUS_TOKEN: ${{ secrets.NEXUS_TOKEN }}
-          RELEASE_VERSION: ${{ steps.draft.outputs.tag }}
-          SNAPSHOT: true

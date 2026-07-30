@@ -1,17 +1,28 @@
 # <meta>
 #    <source>@pssbletrngle/github-meta-generator</source>
-#    <version>1.0.107</version>
-#    <timestamp>2026-07-24T11:27:58.764Z</timestamp>
-#    <hash>bcaa125a8d1ccf50</hash>
+#    <version>1.0.114</version>
+#    <timestamp>2026-07-30T07:43:28.708Z</timestamp>
+#    <hash>834bc4f146ad49e2</hash>
 # </meta>
 
 name: Release
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - "main"
+      - "main/**"
+    paths:
+      - "**.java"
+      - "**.kt"
+      - "gradle.properties"
+      - "gradle/**"
 
 env:
   CI: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -37,8 +48,8 @@ jobs:
       - name: Build and upload
         run: ./gradlew build upload
         env:
-          CHANGELOG: ${{ github.event.release.body }}
-          RELEASE_VERSION: ${{ github.event.release.tag_name }}
+          CHANGELOG: automated patch release
+          PATCH_VERSION: ${{ github.run_number }}
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
           NEXUS_TOKEN: ${{ secrets.NEXUS_TOKEN }}
 
@@ -48,3 +59,9 @@ jobs:
           archive: false
           path: build/release.json
           retention-days: 1
+
+      - name: Create tag
+        uses: PssbleTrngle/create-tag@v1
+        with:
+          from: build/release.json
+          token: ${{ secrets.GITHUB_TOKEN }}
