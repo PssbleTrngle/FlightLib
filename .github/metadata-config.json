@@ -3,14 +3,7 @@
   "$schema": "https://workflows.somethingcatchy.net/schema/config.json",
   "assignee": "@owner",
   "type": "minecraft",
-  "loaders": [
-    "neoforge",
-    "fabric",
-    "forge"
-  ],
-  "upload": {
-    "strategy": "push",
-    "nexus": true
-  },
+  "loaders": ["neoforge", "fabric", "forge"],
+  "upload": { "strategy": "push", "nexus": true },
   "sonar": true
 }
