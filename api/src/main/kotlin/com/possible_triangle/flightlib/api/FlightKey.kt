@@ -8,6 +8,7 @@ import java.util.*
 
 enum class FlightKey(
     val toggle: Boolean,
+    val register: Boolean = false,
     val defaultKey: Int? = null,
     val default: Boolean = false,
 ) : StringRepresentable {
@@ -16,8 +17,9 @@ enum class FlightKey(
     RIGHT(false),
     FORWARD(false),
     BACKWARD(false),
-    TOGGLE_ACTIVE(true, default = true, defaultKey = GLFW.GLFW_KEY_G),
-    TOGGLE_HOVER(true, defaultKey = GLFW.GLFW_KEY_H),
+    TOGGLE_ACTIVE(true, register = true, default = true, defaultKey = GLFW.GLFW_KEY_G),
+    TOGGLE_HOVER(true, register = true, defaultKey = GLFW.GLFW_KEY_H),
+    ACTIVATE_ELYTRA(false, register = true),
     ;
 
     lateinit var binding: Optional<KeyMapping>

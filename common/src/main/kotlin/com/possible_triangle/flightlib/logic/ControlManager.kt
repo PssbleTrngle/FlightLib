@@ -32,14 +32,19 @@ object ControlManager {
     fun registerKeybinds(registry: Consumer<KeyMapping>) {
         FlightKey.entries.forEach { key ->
             key.binding =
-                Optional.ofNullable(key.defaultKey).map {
-                    KeyMapping(
-                        "key.jetpack.${key.name.lowercase()}.description",
-                        InputConstants.Type.KEYSYM,
-                        it,
-                        "key.categories.movement.jetpack",
+                if (key.register) {
+                    Optional.of(
+                        KeyMapping(
+                            "key.jetpack.${key.name.lowercase()}.description",
+                            InputConstants.Type.KEYSYM,
+                            key.defaultKey ?: -1,
+                            "key.categories.movement.jetpack",
+                        ),
                     )
+                } else {
+                    Optional.empty()
                 }
+
             key.binding.ifPresent {
                 registry.accept(it)
             }

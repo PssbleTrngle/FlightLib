@@ -7,5 +7,6 @@
   "overlay.flightlib.control.toggle_active": "Motor",
   "key.jetpack.toggle_hover.description": "Schalte Jetpack-Motor an/ab",
   "key.jetpack.toggle_active.description": "Schalte Jetpack-Schebemodus an/ab",
+  "key.jetpack.activate_elytra.description": "Nutze Elytra",
   "flightlib.subtitle.whoosh": "Jetpack rauscht"
 }
