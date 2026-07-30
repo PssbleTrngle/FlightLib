@@ -1,12 +1,14 @@
 # <meta>
 #    <source>@pssbletrngle/github-meta-generator</source>
-#    <version>1.0.114</version>
-#    <timestamp>2026-07-30T07:43:28.708Z</timestamp>
-#    <hash>834bc4f146ad49e2</hash>
+#    <version>1.0.115</version>
+#    <timestamp>2026-07-30T07:46:41.060Z</timestamp>
+#    <hash>311e6d40dbfc63da</hash>
 # </meta>
 
 name: Release
 on:
+  workflow_dispatch:
+
   push:
     branches:
       - "main"
