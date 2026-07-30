@@ -32,5 +32,10 @@ interface IFlightApi {
         entity: LivingEntity,
     ): Boolean
 
+    /**
+     * @return null if the jetpack is not doing anything
+     */
+    fun currentAction(context: IJetpack.Context): FlightAction?
+
     fun findActiveJetpack(entity: LivingEntity): IJetpack.Context?
 }

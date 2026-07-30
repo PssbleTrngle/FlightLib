@@ -1,6 +1,7 @@
 package com.possible_triangle.flightlib.logic
 
 import com.possible_triangle.flightlib.api.Constants
+import com.possible_triangle.flightlib.api.FlightAction
 import com.possible_triangle.flightlib.api.FlightKey
 import com.possible_triangle.flightlib.api.FlyingPose
 import com.possible_triangle.flightlib.api.IFlightApi
@@ -33,18 +34,19 @@ object JetpackLogic {
 
     private val ATTRIBUTE_ID = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "boost")
 
-    private fun handleSwimModifier(
-        entity: LivingEntity,
-        context: Context?,
-    ) {
-        val attribute = Services.REGISTRIES.swimSpeed?.let { entity.getAttribute(it) } ?: return
+    private val LivingEntity.SWIM_SPEED_ATTRIBUTE
+        get() =
+            Services.REGISTRIES.swimSpeed?.let { getAttribute(it) }
 
+    private fun LivingEntity.removeSwimModifier() {
+        SWIM_SPEED_ATTRIBUTE?.removeModifier(ATTRIBUTE_ID)
+    }
+
+    private fun LivingEntity.addSwimModifier(context: Context) {
+        val attribute = SWIM_SPEED_ATTRIBUTE ?: return
         val hasModifier = attribute.getModifier(ATTRIBUTE_ID) != null
-        val shouldHaveModifier = context?.pose == FlyingPose.SUPERMAN && entity.isUnderWater
 
-        if (!shouldHaveModifier && hasModifier) {
-            attribute.removeModifier(ATTRIBUTE_ID)
-        } else if (shouldHaveModifier && !hasModifier) {
+        if (!hasModifier) {
             val modifier = context.jetpack.swimModifier(context)
             if (modifier > 0) {
                 attribute.addPermanentModifier(
@@ -60,21 +62,27 @@ object JetpackLogic {
 
     fun onTick(entity: LivingEntity) {
         val context = IFlightApi.INSTANCE.findActiveJetpack(entity)
-        handleSwimModifier(entity, context)
 
-        if (context == null) return
+        val action = context?.let(IFlightApi.INSTANCE::currentAction)
+        val swimming = action == FlightAction.BOOST_SWIMMING
 
-        val isUsed =
-            when (context.pose) {
-                FlyingPose.SUPERMAN -> elytraBoost(context)
-                FlyingPose.UPRIGHT -> uprightMovement(context)
-            }
-
-        if (isUsed && context.jetpack.isThrusting(context)) {
-            spawnParticles(context)
-            playSound(context)
-            context.jetpack.onUse(context)
+        if (!swimming) {
+            entity.removeSwimModifier()
         }
+
+        if (action == null) return
+
+        if (action == FlightAction.BOOST_ELYTRA) {
+            boost(context)
+        } else if (swimming) {
+            entity.addSwimModifier(context)
+        } else {
+            uprightMovement(context, action)
+        }
+
+        spawnParticles(context)
+        playSound(context)
+        context.jetpack.onUse(context, action)
     }
 
     private fun playSound(context: Context) {
@@ -113,36 +121,27 @@ object JetpackLogic {
         }
     }
 
-    private fun elytraBoost(ctx: Context): Boolean {
+    private fun boost(ctx: Context) {
         val boost = ctx.jetpack.elytraBoost()
-        if (boost <= 0.0) return false
 
-        val entity = ctx.entity
-        if (!entity.isFallFlying) return true
-        if (entity !is Player || !FlightKey.UP.isPressed(entity)) return false
-
-        if (entity.level().gameTime % 15 == 0L) {
-            val look = entity.lookAngle
+        if (ctx.entity.level().gameTime % 15 == 0L) {
+            val look = ctx.entity.lookAngle
             val factor = { i: Double -> (i * 0.1 + (i * boost - i) * 0.5) }
-            entity.deltaMovement =
-                entity.deltaMovement.add(
+            ctx.entity.deltaMovement =
+                ctx.entity.deltaMovement.add(
                     factor(look.x),
                     factor(look.y),
                     factor(look.z),
                 )
         }
-
-        return true
     }
 
-    private fun uprightMovement(ctx: Context): Boolean {
+    private fun uprightMovement(
+        ctx: Context,
+        action: FlightAction,
+    ) {
         val entity = ctx.entity
-        val buttonUp = FlightKey.UP.isPressed(entity)
-        val buttonDown = entity.isShiftKeyDown
         val hovering = IFlightApi.INSTANCE.isActive(ctx.jetpack.hoverType(ctx), FlightKey.TOGGLE_HOVER, entity)
-
-        if (ctx.entity.vehicle != null) return false
-        if (ctx.entity.onGround() && !buttonUp) return false
 
         val verticalSpeed =
             if (hovering) {
@@ -161,43 +160,54 @@ object JetpackLogic {
             } else {
                 ctx.jetpack.horizontalSpeed(ctx)
             }
+
         val acceleration = ctx.jetpack.acceleration(ctx)
 
         val speed =
-            when {
-                buttonUp && !buttonDown -> verticalSpeed
-                buttonDown && !buttonUp -> -verticalSpeed
-                hovering && entity.isUnderWater -> 0.0
-                hovering -> ctx.jetpack.hoverSpeed(ctx)
-                else -> null
-            }
+            when (action) {
+                FlightAction.UP -> {
+                    verticalSpeed
+                }
 
-        if (speed != null) {
-            if (entity is Player) {
-                DIRECTIONS.filter { it.first.isPressed(entity) }.forEach {
-                    val vec = Vec3(it.second.x, 0.0, it.second.z).scale(horizontalSpeed)
-                    entity.moveRelative(1F, vec)
+                FlightAction.DOWN -> {
+                    -verticalSpeed
+                }
+
+                FlightAction.HOVER -> {
+                    if (entity.isUnderWater) {
+                        0.0
+                    } else {
+                        ctx.jetpack.hoverSpeed(ctx)
+                    }
+                }
+
+                else -> {
+                    error("invalid flight action set")
                 }
             }
 
-            val motion = entity.deltaMovement
-
-            val motionY =
-                if (speed <= 0) {
-                    max(motion.y, speed)
-                } else {
-                    min(motion.y + acceleration, speed)
-                }
-
-            entity.setDeltaMovement(motion.x, motionY, motion.z)
-
-            if (entity is ServerPlayer) {
-                entity.fallDistance = 0F
-                (entity.connection as ServerGamePacketListenerImplAccessor).setAboveGroundTickCount(0)
+        if (entity is Player) {
+            DIRECTIONS.filter { it.first.isPressed(entity) }.forEach {
+                val vec = Vec3(it.second.x, 0.0, it.second.z).scale(horizontalSpeed)
+                entity.moveRelative(1F, vec)
             }
         }
 
-        return true
+        val motion = entity.deltaMovement
+
+        val motionY =
+            if (speed <= 0) {
+                max(motion.y, speed)
+            } else {
+                min(motion.y + acceleration, speed)
+            }
+
+        entity.setDeltaMovement(motion.x, motionY, motion.z)
+
+        if (entity is ServerPlayer) {
+            entity.fallDistance = 0F
+            (entity.connection as ServerGamePacketListenerImplAccessor).setAboveGroundTickCount(0)
+        }
     }
 
     private fun spawnParticles(context: Context) {

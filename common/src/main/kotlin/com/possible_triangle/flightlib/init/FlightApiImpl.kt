@@ -35,11 +35,8 @@ object FlightApiImpl : IFlightApi {
             .asSequence()
             .map { it.source to it.provider() }
             .filter { (_, jetpack) -> jetpack != null }
-            .map { (source, jetpack) -> IJetpack.Context.builder(entity, world, pose, source) to jetpack }
-            .map { (builder, jetpack) -> builder to jetpack!! }
-            .map { (builder, jetpack) -> builder(jetpack) }
-            .filter { it.jetpack.isValid(it) }
-            .firstOrNull()
+            .map { (source, jetpack) -> IJetpack.Context(jetpack!!, entity, world, pose, source) }
+            .firstOrNull { it.jetpack.isValid(it) }
     }
 
     override fun isActive(
@@ -71,4 +68,49 @@ object FlightApiImpl : IFlightApi {
         key: FlightKey,
         entity: LivingEntity,
     ) = ControlManager.isPressed(key, entity)
+
+    override fun currentAction(context: IJetpack.Context): FlightAction? {
+        return when (context.pose) {
+            FlyingPose.SUPERMAN -> {
+                if (context.entity.isUnderWater) return FlightAction.BOOST_SWIMMING
+
+                val boost = context.jetpack.elytraBoost()
+                if (boost <= 0.0) return null
+
+                if (!context.entity.isFallFlying) return null
+                if (context.entity !is Player || !FlightKey.UP.isPressed(context.entity)) return null
+
+                FlightAction.BOOST_ELYTRA
+            }
+
+            FlyingPose.UPRIGHT -> {
+                val entity = context.entity
+                val buttonUp = FlightKey.UP.isPressed(entity)
+                val buttonDown = entity.isShiftKeyDown
+                val hovering =
+                    IFlightApi.INSTANCE.isActive(context.jetpack.hoverType(context), FlightKey.TOGGLE_HOVER, entity)
+
+                if (context.entity.vehicle != null) return null
+                if (context.entity.onGround() && !buttonUp) return null
+
+                when {
+                    buttonUp && !buttonDown -> {
+                        FlightAction.UP
+                    }
+
+                    hovering -> {
+                        if (buttonDown && !buttonUp) {
+                            FlightAction.DOWN
+                        } else {
+                            FlightAction.HOVER
+                        }
+                    }
+
+                    else -> {
+                        null
+                    }
+                }
+            }
+        }
+    }
 }

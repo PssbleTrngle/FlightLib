@@ -12,16 +12,7 @@ interface IJetpack {
         val world: Level,
         val pose: FlyingPose,
         val source: ISource,
-    ) {
-        companion object {
-            fun builder(
-                entity: LivingEntity,
-                world: Level,
-                pose: FlyingPose,
-                source: ISource,
-            ): (IJetpack) -> Context = { Context(it, entity, world, pose, source) }
-        }
-    }
+    )
 
     fun activeType(context: Context): ControlType = ControlType.ALWAYS
 
@@ -50,7 +41,14 @@ interface IJetpack {
 
     fun isUsable(context: Context): Boolean
 
-    fun onUse(context: Context) {}
+    fun onUse(
+        context: Context,
+        action: FlightAction,
+    ) = onUse(context)
+
+    @Deprecated("replace with more specific useOn", replaceWith = ReplaceWith("useOn(Context, FlightAction)"))
+    fun onUse(context: Context) {
+    }
 
     /**
      * Used to display the particles
@@ -60,7 +58,10 @@ interface IJetpack {
 
     fun isHovering(context: Context): Boolean = IFlightApi.INSTANCE.isActive(hoverType(context), FlightKey.TOGGLE_HOVER, context.entity)
 
+    @Deprecated("check currentAction != null instead", replaceWith = ReplaceWith("IFlightApi.currentAction(context)"))
     fun isThrusting(context: Context): Boolean {
+        return IFlightApi.INSTANCE.currentAction(context) != null
+        /*
         val entity = context.entity
         if (entity.vehicle != null) return false
         if (!IFlightApi.INSTANCE.isActive(
@@ -71,9 +72,9 @@ interface IJetpack {
         ) {
             return false
         }
-        if (context.pose == FlyingPose.SUPERMAN && entity.deltaMovement.length() > 0.1) return true
-        if (isHovering(context) && !entity.onGround()) return true
-        return FlightKey.UP.isPressed(entity)
+
+        return true
+         */
     }
 
     fun createParticles(): ParticleOptions
