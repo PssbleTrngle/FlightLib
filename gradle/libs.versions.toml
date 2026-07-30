@@ -1,4 +1,4 @@
 [libraries]
-curios = { group = "top.theillusivec4.curios", name = "curios-neoforge", version = "9.2.2+1.21.1" }
+curios = { group = "top.theillusivec4.curios", name = "curios-neoforge", version = "9.5.1+1.21.1" }
 trinkets = {  group = "dev.emi", name = "trinkets", version = "3.10.0" }
 cardinal-components-base = { group = "org.ladysnake.cardinal-components-api", name = "cardinal-components-base", version = "6.3.0" }
