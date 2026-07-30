@@ -6,8 +6,10 @@ import net.minecraft.core.particles.ParticleOptions
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.world.phys.Vec3
 
-object DevJetpack : IJetpack {
-    private val THRUSTERS = listOf(Vec3(0.0, 0.8, -0.25))
+class DevJetpack(
+    private val maxHeightAboveGround: Int? = null,
+) : IJetpack {
+    private val thrusters = listOf(Vec3(0.0, 0.8, -0.25))
 
     override fun horizontalSpeed(context: IJetpack.Context) = 0.02
 
@@ -25,7 +27,9 @@ object DevJetpack : IJetpack {
 
     override fun isUsable(context: IJetpack.Context) = true
 
-    override fun getThrusters(context: IJetpack.Context) = THRUSTERS
+    override fun getThrusters(context: IJetpack.Context) = thrusters
 
     override fun createParticles(): ParticleOptions = ParticleTypes.FLAME
+
+    override fun heightAboveGroundLimit(context: IJetpack.Context) = maxHeightAboveGround
 }

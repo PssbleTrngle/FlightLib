@@ -2,8 +2,11 @@ package com.possible_triangle.flightlib.init
 
 import com.possible_triangle.flightlib.api.*
 import com.possible_triangle.flightlib.logic.ControlManager
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.level.Level
 
 object FlightApiImpl : IFlightApi {
     private val PROVIDERS = arrayListOf<ISource.Provider>()
@@ -69,48 +72,75 @@ object FlightApiImpl : IFlightApi {
         entity: LivingEntity,
     ) = ControlManager.isPressed(key, entity)
 
-    override fun currentAction(context: IJetpack.Context): FlightAction? {
-        return when (context.pose) {
-            FlyingPose.SUPERMAN -> {
-                if (context.entity.isUnderWater) return FlightAction.BOOST_SWIMMING
+    override fun currentAction(context: IJetpack.Context): FlightAction? =
+        when (context.pose) {
+            FlyingPose.SUPERMAN -> context.boostingAction()
+            FlyingPose.UPRIGHT -> context.uprightAction()
+        }
 
-                val boost = context.jetpack.elytraBoost()
-                if (boost <= 0.0) return null
+    private fun IJetpack.Context.boostingAction(): FlightAction? {
+        if (entity.isUnderWater) return FlightAction.BOOST_SWIMMING
 
-                if (!context.entity.isFallFlying) return null
-                if (context.entity !is Player || !FlightKey.UP.isPressed(context.entity)) return null
+        val boost = jetpack.elytraBoost()
+        if (boost <= 0.0) return null
 
-                FlightAction.BOOST_ELYTRA
+        if (!entity.isFallFlying) return null
+        if (entity !is Player || !FlightKey.UP.isPressed(entity)) return null
+
+        return FlightAction.BOOST_ELYTRA
+    }
+
+    private fun IJetpack.Context.uprightAction(): FlightAction? {
+        if (entity.vehicle != null) return null
+
+        val maxHeightAboveGround = jetpack.heightAboveGroundLimit(this)
+        if (maxHeightAboveGround != null && missingGroundBelow(world, entity.blockPosition(), maxHeightAboveGround)) {
+            return null
+        }
+
+        val buttonUp = FlightKey.UP.isPressed(entity)
+        val buttonDown = entity.isShiftKeyDown
+
+        if (entity.onGround() && !buttonUp) return null
+
+        val hovering =
+            IFlightApi.INSTANCE.isActive(
+                jetpack.hoverType(this),
+                FlightKey.TOGGLE_HOVER,
+                entity,
+            )
+
+        return when {
+            buttonUp && !buttonDown -> {
+                FlightAction.UP
             }
 
-            FlyingPose.UPRIGHT -> {
-                val entity = context.entity
-                val buttonUp = FlightKey.UP.isPressed(entity)
-                val buttonDown = entity.isShiftKeyDown
-                val hovering =
-                    IFlightApi.INSTANCE.isActive(context.jetpack.hoverType(context), FlightKey.TOGGLE_HOVER, entity)
-
-                if (context.entity.vehicle != null) return null
-                if (context.entity.onGround() && !buttonUp) return null
-
-                when {
-                    buttonUp && !buttonDown -> {
-                        FlightAction.UP
-                    }
-
-                    hovering -> {
-                        if (buttonDown && !buttonUp) {
-                            FlightAction.DOWN
-                        } else {
-                            FlightAction.HOVER
-                        }
-                    }
-
-                    else -> {
-                        null
-                    }
+            hovering -> {
+                if (buttonDown && !buttonUp) {
+                    FlightAction.DOWN
+                } else {
+                    FlightAction.HOVER
                 }
             }
+
+            else -> {
+                null
+            }
         }
+    }
+
+    private fun missingGroundBelow(
+        level: Level,
+        pos: BlockPos,
+        range: Int,
+    ): Boolean {
+        val mutable = pos.mutable()
+        for (y in pos.y downTo (pos.y - range)) {
+            mutable.y = y
+            val state = level.getBlockState(mutable)
+            if (state.isFaceSturdy(level, mutable, Direction.UP)) return false
+        }
+
+        return true
     }
 }

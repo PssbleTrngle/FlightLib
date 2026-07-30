@@ -58,24 +58,10 @@ interface IJetpack {
 
     fun isHovering(context: Context): Boolean = IFlightApi.INSTANCE.isActive(hoverType(context), FlightKey.TOGGLE_HOVER, context.entity)
 
-    @Deprecated("check currentAction != null instead", replaceWith = ReplaceWith("IFlightApi.currentAction(context)"))
-    fun isThrusting(context: Context): Boolean {
-        return IFlightApi.INSTANCE.currentAction(context) != null
-        /*
-        val entity = context.entity
-        if (entity.vehicle != null) return false
-        if (!IFlightApi.INSTANCE.isActive(
-                context.jetpack.activeType(context),
-                FlightKey.TOGGLE_ACTIVE,
-                entity,
-            )
-        ) {
-            return false
-        }
+    fun heightAboveGroundLimit(context: Context): Int? = null
 
-        return true
-         */
-    }
+    @Deprecated("check currentAction != null instead", replaceWith = ReplaceWith("IFlightApi.currentAction(context)"))
+    fun isThrusting(context: Context): Boolean = IFlightApi.INSTANCE.currentAction(context) != null
 
     fun createParticles(): ParticleOptions
 }

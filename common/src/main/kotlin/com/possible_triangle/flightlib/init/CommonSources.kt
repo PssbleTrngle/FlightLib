@@ -28,8 +28,8 @@ object CommonSources {
                         null
                     } else {
                         when (it.item) {
-                            Items.DIAMOND_CHESTPLATE -> DevJetpack
-                            Items.SHIELD -> DevJetpack
+                            Items.DIAMOND_CHESTPLATE -> DevJetpack()
+                            Items.GOLDEN_CHESTPLATE -> DevJetpack(maxHeightAboveGround = 10)
                             else -> null
                         }
                     }
