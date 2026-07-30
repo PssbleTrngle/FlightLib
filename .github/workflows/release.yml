@@ -1,8 +1,8 @@
 # <meta>
 #    <source>@pssbletrngle/github-meta-generator</source>
-#    <version>1.0.115</version>
-#    <timestamp>2026-07-30T07:46:41.060Z</timestamp>
-#    <hash>311e6d40dbfc63da</hash>
+#    <version>1.0.116</version>
+#    <timestamp>2026-07-30T07:59:15.457Z</timestamp>
+#    <hash>b3cb79442b758887</hash>
 # </meta>
 
 name: Release
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
-      contents: read
+      contents: write
       packages: read
     steps:
       - uses: actions/checkout@v7
