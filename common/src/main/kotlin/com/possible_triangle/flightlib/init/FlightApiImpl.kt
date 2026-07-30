@@ -32,13 +32,13 @@ object FlightApiImpl : IFlightApi {
     }
 
     override fun findJetpack(entity: LivingEntity): IJetpack.Context? {
-        val world = entity.level() ?: return null
+        val level = entity.level() ?: return null
         val pose = FlyingPose.get(entity)
         return getAll(entity)
             .asSequence()
             .map { it.source to it.provider() }
             .filter { (_, jetpack) -> jetpack != null }
-            .map { (source, jetpack) -> IJetpack.Context(jetpack!!, entity, world, pose, source) }
+            .map { (source, jetpack) -> IJetpack.Context(jetpack!!, entity, level, pose, source) }
             .firstOrNull { it.jetpack.isValid(it) }
     }
 
@@ -94,7 +94,7 @@ object FlightApiImpl : IFlightApi {
         if (entity.vehicle != null) return null
 
         val maxHeightAboveGround = jetpack.heightAboveGroundLimit(this)
-        if (maxHeightAboveGround != null && missingGroundBelow(world, entity.blockPosition(), maxHeightAboveGround)) {
+        if (maxHeightAboveGround != null && missingGroundBelow(level, entity.blockPosition(), maxHeightAboveGround)) {
             return null
         }
 

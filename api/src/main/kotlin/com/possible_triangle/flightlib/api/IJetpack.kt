@@ -9,7 +9,7 @@ interface IJetpack {
     data class Context(
         val jetpack: IJetpack,
         val entity: LivingEntity,
-        val world: Level,
+        val level: Level,
         val pose: FlyingPose,
         val source: ISource,
     )

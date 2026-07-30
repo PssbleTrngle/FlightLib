@@ -89,13 +89,13 @@ object JetpackLogic {
         val pos = context.entity.blockPosition()
 
         val volume = if (FlightKey.UP.isPressed(context.entity)) 2F else 1F
-        val pitch = context.world.random.nextFloat() * 0.4F + 1F
+        val pitch = context.level.random.nextFloat() * 0.4F + 1F
 
         fun SoundEvent.play(
             volume: Float = 1F,
             pitch: Float = 1F,
         ) {
-            context.world.playSound(
+            context.level.playSound(
                 null,
                 pos,
                 this,
@@ -106,7 +106,7 @@ object JetpackLogic {
         }
 
         if (context.entity.isUnderWater) {
-            if (context.world.gameTime % 10 != 0L) return
+            if (context.level.gameTime % 10 != 0L) return
 
             val (sound, volumeModifier) =
                 when (context.pose) {
@@ -116,7 +116,7 @@ object JetpackLogic {
 
             sound.play(volume + volumeModifier, pitch - 0.5F)
         } else {
-            if (context.world.gameTime % 5 != 0L) return
+            if (context.level.gameTime % 5 != 0L) return
             CommonClass.SOUND_WHOOSH().play(volume, pitch)
         }
     }
@@ -211,8 +211,8 @@ object JetpackLogic {
     }
 
     private fun spawnParticles(context: Context) {
-        val world = context.world
-        if (!world.isClientSide()) return
+        val level = context.level
+        if (!level.isClientSide()) return
 
         val thrusters = context.jetpack.getThrusters(context) ?: return
         val yaw = (context.entity.yBodyRot / 180 * -Math.PI).toFloat()
@@ -233,7 +233,7 @@ object JetpackLogic {
                     } else {
                         context.jetpack.createParticles()
                     }
-                world.addParticle(
+                level.addParticle(
                     particle,
                     context.entity.x + pos.x,
                     context.entity.y + pos.y,
