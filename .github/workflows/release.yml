@@ -1,8 +1,8 @@
 # <meta>
 #    <source>@pssbletrngle/github-meta-generator</source>
-#    <version>1.0.120</version>
-#    <timestamp>2026-08-11T16:31:02.827Z</timestamp>
-#    <hash>e2d5ef3a5bb3d440</hash>
+#    <version>1.0.124</version>
+#    <timestamp>2026-10-16T13:34:34.994Z</timestamp>
+#    <hash>eac19f00a10af520</hash>
 # </meta>
 
 name: Release
@@ -25,7 +25,7 @@ jobs:
         with:
           lfs: true
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           java-version: 26
           distribution: temurin
